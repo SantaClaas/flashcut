@@ -31,11 +31,11 @@ Always use **pnpm** (never npm/npx; use `pnpm dlx` instead of npx).
 
 ## Architecture
 
-**Storage:** `@tursodatabase/database-wasm` — SQLite in the browser, persisted in OPFS. It needs SharedArrayBuffer, so COOP/COEP headers are mandatory in dev AND production (`vite.config.ts` sets them for dev/preview; `public/_headers` for Netlify/Cloudflare; plain GitHub Pages cannot host this app). Only one tab can hold the database; `App.tsx`'s ErrorBoundary shows the multi-tab error screen. Import from `@tursodatabase/database-wasm/vite` (dev-server workaround baked into the export map).
+**Storage:** `@tursodatabase/database-wasm` — SQLite in the browser, persisted in OPFS. It needs SharedArrayBuffer, so COOP/COEP headers are mandatory in dev AND production (`vite.config.ts` sets them for dev/preview; `public/_headers` for Netlify/Cloudflare; plain GitHub Pages cannot host this app). Multiple tabs work via leader election: one tab acquires a Web Lock (`navigator.locks`), opens the real database, and serves all other tabs over a BroadcastChannel RPC (`src/lib/broadcast-service.ts`, crackle-style proxy with correlation ids — BroadcastChannel cannot transfer MessagePorts). Followers are promoted automatically when the leader closes. Import from `@tursodatabase/database-wasm/vite` (dev-server workaround baked into the export map).
 
 **Layering** (UI → db, with srs as pure functions in between):
 
-- `src/db/client.ts` — lazy connection singleton (`getDb`) + `closeDb` (used around OPFS file import/export). Runs migrations on open.
+- `src/db/client.ts` — leader election + `DbService` (exec/run/get/all/exportFile/importFile). `getDb()` returns a `DbConnection` that dispatches locally on the leader and proxies on followers; only the leader runs migrations and may close the database. File export/import goes through `dbService`, never raw OPFS access from followers.
 - `src/db/migrations.ts` — append-only SQL migrations, tracked via `PRAGMA user_version`. Cascading deletes happen in repository code, not via FK enforcement.
 - `src/db/{decks,cards,reviews}.ts` — repository functions. All take a `DbConnection` parameter so tests can inject `@tursodatabase/database` (the Node build with an identical async API — this is why tests run in plain Node, no browser needed).
 - `src/srs/` — ts-fsrs wrapper. `mapping.ts` is the ONLY place that converts between ts-fsrs `Date`s, stored ISO strings, and `Temporal` — keep it that way.

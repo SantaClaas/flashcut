@@ -1,35 +1,27 @@
-import { closeDb, DB_FILE, getDb } from "../db/client";
+import { dbService } from "../db/client";
 import { downloadBlob } from "./download";
 
 /**
- * Downloads the raw SQLite file from OPFS. The WAL is checkpointed and the connection closed first
- * so the copied file is complete and consistent; the next query lazily reopens the database.
+ * Downloads the raw SQLite file. The leader tab checkpoints the WAL and briefly closes the database
+ * so the copied file is complete and consistent, regardless of which tab initiates the export.
  */
 export async function exportDatabaseFile(): Promise<void> {
-  const db = await getDb();
-  await db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
-  await closeDb();
-  const root = await navigator.storage.getDirectory();
-  const handle = await root.getFileHandle(DB_FILE);
-  const file = await handle.getFile();
-  const bytes = await file.arrayBuffer();
+  const bytes = await dbService.exportFile();
   const date = Temporal.Now.plainDateISO().toString();
-  downloadBlob(new Blob([bytes], { type: "application/vnd.sqlite3" }), `flashcut-${date}.db`);
+  downloadBlob(
+    new Blob([bytes as Uint8Array<ArrayBuffer>], { type: "application/vnd.sqlite3" }),
+    `flashcut-${date}.db`,
+  );
 }
 
 /**
- * Replaces the OPFS database with the given SQLite file and reloads the app. Destructive — callers
- * must confirm with the user first.
+ * Replaces the database with the given SQLite file. The leader tab writes it to OPFS and reloads
+ * every tab. Destructive — callers must confirm with the user first.
  */
 export async function importDatabaseFile(file: File): Promise<void> {
-  const bytes = await file.arrayBuffer();
-  await closeDb();
-  const root = await navigator.storage.getDirectory();
-  // Drop a stale WAL so it cannot be replayed over the imported file.
-  await root.removeEntry(`${DB_FILE}-wal`).catch(() => undefined);
-  const handle = await root.getFileHandle(DB_FILE, { create: true });
-  const writable = await handle.createWritable();
-  await writable.write(bytes);
-  await writable.close();
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  await dbService.importFile(bytes);
+  // The leader broadcasts a reload; reload explicitly too in case this tab is
+  // the leader (a poster does not receive its own broadcast).
   location.reload();
 }
