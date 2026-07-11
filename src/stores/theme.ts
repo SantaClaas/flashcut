@@ -14,8 +14,9 @@ function apply(scheme: ColorScheme): void {
   document.documentElement.dataset["colorScheme"] = scheme;
 }
 
-const [scheme, setScheme] = createSignal<ColorScheme>(preferredScheme());
-apply(scheme());
+const initialScheme = preferredScheme();
+const [scheme, setScheme] = createSignal<ColorScheme>(initialScheme);
+apply(initialScheme);
 
 export const colorScheme = scheme;
 

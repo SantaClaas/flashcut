@@ -4,7 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Flashcut is a client-side-only SPA for flashcard learning with FSRS spaced repetition. SolidJS + Tailwind CSS v4, data stored in a SQLite database running in the browser (Turso WASM, persisted in OPFS). No backend.
+Flashcut is a client-side-only SPA for flashcard learning with FSRS spaced repetition. SolidJS **2.0 beta** + Tailwind CSS v4, data stored in a SQLite database running in the browser (Turso WASM, persisted in OPFS). No backend.
+
+## Solid 2.0 beta conventions
+
+This repo uses Solid 2.0 (`solid-js@next`, `@solidjs/web`, `@solidjs/router@next`, `vite-plugin-solid@next`) — do NOT use 1.x APIs:
+
+- Async data: `createMemo(async () => …)` (reads suspend under `<Loading>`), NOT `createResource`. Invalidate with `refresh(memo)` after mutations, not `refetch`.
+- Boundaries: `<Loading>` (was Suspense) and `<Errored>` (was ErrorBoundary; fallback gets `(err: () => unknown, reset)` — err is an accessor).
+- Lifecycle: `onSettled(() => { …; return cleanup })` (was onMount). Split-effect form: `createEffect(compute, apply)`.
+- Batching: setters don't update reads until the microtask flush; never read a signal right after setting it expecting the new value (use `flush()` in tests only).
+- `render` comes from `@solidjs/web` (not `solid-js/web`); `jsxImportSource` is `@solidjs/web` (tsconfig.app.json).
+- `src/router-jsx-compat.d.ts` shims the router's stale JSX types (`<A class=…>`); remove once @solidjs/router ships @solidjs/web-based types.
+- Renames if needed later: `mergeProps`→`merge`, `splitProps`→`omit`, `unwrap`→`snapshot`, store setters are draft-first (produce-style).
 
 ## Commands
 

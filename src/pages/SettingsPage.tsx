@@ -1,4 +1,4 @@
-import { createResource, createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
 import { getDb } from "../db/client";
 import { listDecks } from "../db/decks";
@@ -15,12 +15,12 @@ async function fetchDecks() {
 }
 
 export default function SettingsPage() {
-  const [decks, { refetch }] = createResource(fetchDecks);
+  const decks = createMemo(() => fetchDecks());
   const [selectedDeckId, setSelectedDeckId] = createSignal<number>();
   const [status, setStatus] = createSignal("");
 
   async function exportDeck() {
-    const deckId = selectedDeckId() ?? decks()?.[0]?.id;
+    const deckId = selectedDeckId() ?? decks()[0]?.id;
     if (deckId == null) return;
     const db = await getDb();
     const data = await exportDeckJson(db, deckId);
@@ -36,7 +36,7 @@ export default function SettingsPage() {
       const data: unknown = JSON.parse(await file.text());
       const db = await getDb();
       await importDeckJson(db, data);
-      await refetch();
+      refresh(decks);
       setStatus(`Imported “${file.name}”.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : String(error));
@@ -75,7 +75,7 @@ export default function SettingsPage() {
           Share or back up a single deck, including its scheduling state. Review history is not
           included — use the database export below for a full backup.
         </p>
-        <Show when={decks()?.length}>
+        <Show when={decks().length}>
           <div class="flex gap-2">
             <select
               class={input}

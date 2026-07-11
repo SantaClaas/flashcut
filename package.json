@@ -15,11 +15,12 @@
     "lint:fix": "oxlint --fix"
   },
   "dependencies": {
-    "@solidjs/router": "^0.16.1",
+    "@solidjs/router": "0.17.0-next.3",
+    "@solidjs/web": "2.0.0-beta.17",
     "@tursodatabase/database-wasm": "^0.6.1",
     "dompurify": "^3.4.11",
     "marked": "^18.0.6",
-    "solid-js": "^1.9.14",
+    "solid-js": "2.0.0-beta.17",
     "temporal-polyfill": "^1.0.1",
     "ts-fsrs": "^5.4.1"
   },
@@ -30,10 +31,11 @@
     "@types/node": "^26.1.1",
     "oxfmt": "^0.58.0",
     "oxlint": "^1.73.0",
+    "playwright": "^1.61.1",
     "tailwindcss": "^4.3.2",
     "typescript": "^7.0.2",
     "vite": "^8.1.4",
-    "vite-plugin-solid": "^2.11.12",
+    "vite-plugin-solid": "3.0.0-next.5",
     "vitest": "^4.1.10"
   }
 }

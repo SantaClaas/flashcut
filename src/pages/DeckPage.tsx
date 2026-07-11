@@ -1,5 +1,5 @@
 import { A, useParams } from "@solidjs/router";
-import { createResource, createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
 import { Markdown } from "../components/Markdown";
 import { createCard, deleteCard, listCards, updateCardContent } from "../db/cards";
@@ -22,8 +22,8 @@ async function fetchCards(id: number) {
 export default function DeckPage() {
   const params = useParams();
   const deckId = () => Number(params["id"]);
-  const [deck] = createResource(deckId, fetchDeck);
-  const [cards, { refetch }] = createResource(deckId, fetchCards);
+  const deck = createMemo(() => fetchDeck(deckId()));
+  const cards = createMemo(() => fetchCards(deckId()));
 
   const [front, setFront] = createSignal("");
   const [back, setBack] = createSignal("");
@@ -54,7 +54,7 @@ export default function DeckPage() {
       await updateCardContent(db, id, front(), back());
     }
     resetForm();
-    await refetch();
+    refresh(cards);
   }
 
   async function removeCard(id: number) {
@@ -62,7 +62,7 @@ export default function DeckPage() {
     const db = await getDb();
     await deleteCard(db, id);
     if (editingId() === id) resetForm();
-    await refetch();
+    refresh(cards);
   }
 
   function startEditing(id: number, cardFront: string, cardBack: string) {
@@ -135,7 +135,7 @@ export default function DeckPage() {
         </form>
 
         <Show
-          when={cards()?.length}
+          when={cards().length}
           fallback={<p class="text-center text-sm text-stone-500">No cards in this deck yet.</p>}
         >
           <ul class="space-y-2">

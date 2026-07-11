@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { createResource, createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
 import { getDb } from "../db/client";
 import { createDeck, deleteDeck, listDecks } from "../db/decks";
@@ -12,7 +12,7 @@ async function fetchDecks() {
 }
 
 export default function DeckListPage() {
-  const [decks, { refetch }] = createResource(fetchDecks);
+  const decks = createMemo(() => fetchDecks());
   const [name, setName] = createSignal("");
 
   async function addDeck(event: SubmitEvent) {
@@ -22,14 +22,14 @@ export default function DeckListPage() {
     const db = await getDb();
     await createDeck(db, trimmed, "", isoNow());
     setName("");
-    await refetch();
+    refresh(decks);
   }
 
   async function removeDeck(id: number, deckName: string) {
     if (!confirm(`Delete deck “${deckName}” and all of its cards?`)) return;
     const db = await getDb();
     await deleteDeck(db, id);
-    await refetch();
+    refresh(decks);
   }
 
   return (
@@ -47,7 +47,7 @@ export default function DeckListPage() {
       </form>
 
       <Show
-        when={decks()?.length}
+        when={decks().length}
         fallback={
           <p class="mt-12 text-center text-sm text-stone-500">
             No decks yet — create your first one above.

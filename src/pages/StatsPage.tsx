@@ -1,4 +1,4 @@
-import { createMemo, createResource, For, Show } from "solid-js";
+import { createMemo, For } from "solid-js";
 
 import { getDb } from "../db/client";
 import { reviewTimesSince, scheduledDueTimes, totalReviewCount } from "../db/reviews";
@@ -57,11 +57,11 @@ function BarChart(props: { days: DayBucket[]; class?: string }) {
 }
 
 export default function StatsPage() {
-  const [stats] = createResource(fetchStats);
+  const stats = createMemo(() => fetchStats());
 
   const reviewsByDay = createMemo(() => {
     const byDay = new Map<string, number>();
-    for (const iso of stats()?.reviews ?? []) {
+    for (const iso of stats().reviews) {
       const key = toLocalDay(iso).toString();
       byDay.set(key, (byDay.get(key) ?? 0) + 1);
     }
@@ -82,7 +82,7 @@ export default function StatsPage() {
       date: today.add({ days: offset }),
       count: 0,
     }));
-    for (const iso of stats()?.dues ?? []) {
+    for (const iso of stats().dues) {
       let day = toLocalDay(iso);
       // Overdue cards count as due today.
       if (Temporal.PlainDate.compare(day, today) < 0) day = today;
@@ -95,25 +95,23 @@ export default function StatsPage() {
   const reviewedToday = () => reviewsByDay().get(Temporal.Now.plainDateISO().toString()) ?? 0;
 
   return (
-    <Show when={stats()}>
-      <div class="space-y-6">
-        <div class="grid grid-cols-3 gap-3">
-          <StatTile label="Reviews today" value={reviewedToday()} />
-          <StatTile label="Day streak" value={currentStreak(new Set(reviewsByDay().keys()))} />
-          <StatTile label="Total reviews" value={stats()!.total} />
-        </div>
-
-        <section class={card}>
-          <h2 class="mb-4 text-sm font-semibold">Reviews — last {HISTORY_DAYS} days</h2>
-          <BarChart days={history()} />
-        </section>
-
-        <section class={card}>
-          <h2 class="mb-4 text-sm font-semibold">Due forecast — next {FORECAST_DAYS} days</h2>
-          <BarChart days={forecast()} />
-        </section>
+    <div class="space-y-6">
+      <div class="grid grid-cols-3 gap-3">
+        <StatTile label="Reviews today" value={reviewedToday()} />
+        <StatTile label="Day streak" value={currentStreak(new Set(reviewsByDay().keys()))} />
+        <StatTile label="Total reviews" value={stats().total} />
       </div>
-    </Show>
+
+      <section class={card}>
+        <h2 class="mb-4 text-sm font-semibold">Reviews — last {HISTORY_DAYS} days</h2>
+        <BarChart days={history()} />
+      </section>
+
+      <section class={card}>
+        <h2 class="mb-4 text-sm font-semibold">Due forecast — next {FORECAST_DAYS} days</h2>
+        <BarChart days={forecast()} />
+      </section>
+    </div>
   );
 }
 
