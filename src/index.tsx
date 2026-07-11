@@ -26,6 +26,7 @@ render(
       <Route path="/decks/:id/study" component={lazy(() => import("./pages/StudyPage"))} />
       <Route path="/stats" component={lazy(() => import("./pages/StatsPage"))} />
       <Route path="/settings" component={lazy(() => import("./pages/SettingsPage"))} />
+      <Route path="/wipe" component={lazy(() => import("./pages/WipePage"))} />
       <Route path="*" component={lazy(() => import("./pages/NotFoundPage"))} />
     </Router>
   ),

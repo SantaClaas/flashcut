@@ -23,6 +23,8 @@ export type DbService = {
   exportFile(): Promise<Uint8Array>;
   /** Replaces the database file and reloads every tab. Destructive. */
   importFile(bytes: Uint8Array): Promise<void>;
+  /** Deletes the database files entirely and reloads every tab. Destructive. */
+  wipe(): Promise<void>;
 };
 
 const channel = new BroadcastChannel("flashcut-db");
@@ -85,6 +87,17 @@ const localService: DbService = {
     channel.postMessage({ scope: SCOPE, kind: "reload" });
     location.reload();
   },
+
+  async wipe() {
+    const db = await getLocal();
+    await db.close();
+    localDb = undefined;
+    const root = await navigator.storage.getDirectory();
+    await root.removeEntry(`${DB_FILE}-wal`).catch(() => undefined);
+    await root.removeEntry(DB_FILE).catch(() => undefined);
+    channel.postMessage({ scope: SCOPE, kind: "reload" });
+    location.reload();
+  },
 };
 
 channel.addEventListener("message", (event: MessageEvent<{ scope?: string; kind?: string }>) => {
@@ -128,6 +141,7 @@ export const dbService: DbService = {
   all: (sql, params) => callService((service) => service.all(sql, params)),
   exportFile: () => callService((service) => service.exportFile()),
   importFile: (bytes) => callService((service) => service.importFile(bytes)),
+  wipe: () => callService((service) => service.wipe()),
 };
 
 const connection: DbConnection = {
