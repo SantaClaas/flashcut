@@ -19,8 +19,8 @@ function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
     <div class="mx-auto mt-16 max-w-md text-center">
       <h1 class="text-lg font-semibold">Something went wrong</h1>
       <p class="mt-3 text-sm text-stone-600 dark:text-stone-400">
-        The local database could not be opened. This usually means Flashcut is already open in
-        another tab — the database can only be used by one tab at a time.
+        Something went wrong while talking to the local database. Reloading usually fixes it — if
+        the problem persists, export your data from Settings and file an issue.
       </p>
       <p class="mt-3 font-mono text-xs break-all text-stone-500">{message()}</p>
       <button class={`${btnPrimary} mt-6`} onClick={() => props.reset()}>
