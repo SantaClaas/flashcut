@@ -1,0 +1,5 @@
+# Cross-origin isolation is required for SharedArrayBuffer (@tursodatabase/database-wasm).
+# Understood by Netlify and Cloudflare Pages; for Vercel use vercel.json instead.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

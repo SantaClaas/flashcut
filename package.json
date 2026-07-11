@@ -1,0 +1,32 @@
+{
+  "name": "flashcut",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@solidjs/router": "^0.16.1",
+    "@tursodatabase/database-wasm": "^0.6.1",
+    "dompurify": "^3.4.11",
+    "marked": "^18.0.6",
+    "solid-js": "^1.9.14",
+    "temporal-polyfill": "^1.0.1",
+    "ts-fsrs": "^5.4.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.2",
+    "@tursodatabase/database": "^0.6.1",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vite-plugin-solid": "^2.11.12",
+    "vitest": "^4.1.10"
+  }
+}
