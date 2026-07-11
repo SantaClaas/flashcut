@@ -110,7 +110,7 @@ export default function SettingsPage() {
       </Show>
 
       <p class="text-center text-xs text-stone-500">
-        Flashcut v{__APP_VERSION__} · build <span class="font-mono">{__GIT_COMMIT__}</span>
+        Flashcut {__APP_VERSION__} · build <span class="font-mono">{__GIT_COMMIT__}</span>
       </p>
     </div>
   );
