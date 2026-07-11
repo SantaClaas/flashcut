@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [solid(), tailwindcss()],
   server: { headers: crossOriginIsolation },
   preview: { headers: crossOriginIsolation },
-  optimizeDeps: {
-    exclude: ["@tursodatabase/database-wasm"],
-  },
+  // optimizeDeps: {
+  //   exclude: ["@tursodatabase/database-wasm"],
+  // },
 });
