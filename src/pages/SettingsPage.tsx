@@ -108,6 +108,10 @@ export default function SettingsPage() {
       <Show when={status()}>
         <p class="text-sm text-teal-700 dark:text-teal-400">{status()}</p>
       </Show>
+
+      <p class="text-center text-xs text-stone-500">
+        Flashcut v{__APP_VERSION__} · build <span class="font-mono">{__GIT_COMMIT__}</span>
+      </p>
     </div>
   );
 }
@@ -117,7 +121,9 @@ function FilePicker(props: { label: string; accept: string; onFile: (file: File)
   return (
     <>
       <input
-        ref={fileInput}
+        ref={(el) => {
+          fileInput = el;
+        }}
         type="file"
         accept={props.accept}
         class="hidden"
