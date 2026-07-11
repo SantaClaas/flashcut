@@ -22,6 +22,7 @@ Always use **pnpm** (never npm/npx; use `pnpm dlx` instead of npx).
 **Storage:** `@tursodatabase/database-wasm` — SQLite in the browser, persisted in OPFS. It needs SharedArrayBuffer, so COOP/COEP headers are mandatory in dev AND production (`vite.config.ts` sets them for dev/preview; `public/_headers` for Netlify/Cloudflare; plain GitHub Pages cannot host this app). Only one tab can hold the database; `App.tsx`'s ErrorBoundary shows the multi-tab error screen. Import from `@tursodatabase/database-wasm/vite` (dev-server workaround baked into the export map).
 
 **Layering** (UI → db, with srs as pure functions in between):
+
 - `src/db/client.ts` — lazy connection singleton (`getDb`) + `closeDb` (used around OPFS file import/export). Runs migrations on open.
 - `src/db/migrations.ts` — append-only SQL migrations, tracked via `PRAGMA user_version`. Cascading deletes happen in repository code, not via FK enforcement.
 - `src/db/{decks,cards,reviews}.ts` — repository functions. All take a `DbConnection` parameter so tests can inject `@tursodatabase/database` (the Node build with an identical async API — this is why tests run in plain Node, no browser needed).

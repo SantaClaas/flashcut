@@ -3,12 +3,7 @@ import { createEmptyCard, fsrs, generatorParameters, Rating, type Grade } from "
 import type { FsrsColumns } from "../db/cards";
 import type { ReviewLogColumns } from "../db/reviews";
 import { formatDistance } from "../lib/time";
-import {
-  columnsToFsrsCard,
-  fsrsCardToColumns,
-  instantToDate,
-  reviewLogToColumns,
-} from "./mapping";
+import { columnsToFsrsCard, fsrsCardToColumns, instantToDate, reviewLogToColumns } from "./mapping";
 
 const scheduler = fsrs(generatorParameters({ enable_fuzz: true }));
 

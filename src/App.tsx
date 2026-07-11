@@ -1,8 +1,8 @@
 import { A } from "@solidjs/router";
 import { ErrorBoundary, type ParentProps, Show, Suspense } from "solid-js";
 
-import { colorScheme, toggleColorScheme } from "./stores/theme";
 import { btnGhost, btnPrimary } from "./lib/ui";
+import { colorScheme, toggleColorScheme } from "./stores/theme";
 
 function navLink(active?: boolean) {
   return `rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-stone-200 dark:hover:bg-stone-800 ${
@@ -19,7 +19,7 @@ function ErrorScreen(props: { error: unknown; reset: () => void }) {
         The local database could not be opened. This usually means Flashcut is already open in
         another tab — the database can only be used by one tab at a time.
       </p>
-      <p class="mt-3 font-mono text-xs text-stone-500 break-all">{message()}</p>
+      <p class="mt-3 font-mono text-xs break-all text-stone-500">{message()}</p>
       <button class={`${btnPrimary} mt-6`} onClick={() => props.reset()}>
         Try again
       </button>
@@ -55,9 +55,7 @@ export default function App(props: ParentProps) {
       </header>
       <main>
         <ErrorBoundary fallback={(error, reset) => <ErrorScreen error={error} reset={reset} />}>
-          <Suspense
-            fallback={<p class="mt-8 text-center text-sm text-stone-500">Loading…</p>}
-          >
+          <Suspense fallback={<p class="mt-8 text-center text-sm text-stone-500">Loading…</p>}>
             {props.children}
           </Suspense>
         </ErrorBoundary>

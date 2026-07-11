@@ -1,5 +1,6 @@
-import { type DbConnection, type Row, withTransaction } from "./connection";
 import { State } from "ts-fsrs";
+
+import { type DbConnection, type Row, withTransaction } from "./connection";
 
 export interface Deck {
   id: number;

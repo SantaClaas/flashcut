@@ -1,9 +1,10 @@
+import { State } from "ts-fsrs";
+
 import { type FsrsColumns, createCard, listCards } from "../db/cards";
 import { type DbConnection, withTransaction } from "../db/connection";
 import { createDeck, getDeck } from "../db/decks";
 import { newCardFsrs } from "../srs/scheduler";
 import { isoNow } from "./time";
-import { State } from "ts-fsrs";
 
 export interface DeckExport {
   version: 1;
@@ -39,7 +40,10 @@ export async function exportDeckJson(db: DbConnection, deckId: number): Promise<
   };
 }
 
-/** Creates a new deck from parsed JSON; cards without valid FSRS state start as new. Returns the deck id. */
+/**
+ * Creates a new deck from parsed JSON; cards without valid FSRS state start as new. Returns the
+ * deck id.
+ */
 export async function importDeckJson(db: DbConnection, data: unknown): Promise<number> {
   const parsed = parseDeckExport(data);
   const now = isoNow();
@@ -68,7 +72,11 @@ export function parseDeckExport(data: unknown): DeckExport {
     throw new Error("Not a valid Flashcut deck file: unsupported version");
   }
   const deck = record["deck"];
-  if (typeof deck !== "object" || deck === null || typeof (deck as Record<string, unknown>)["name"] !== "string") {
+  if (
+    typeof deck !== "object" ||
+    deck === null ||
+    typeof (deck as Record<string, unknown>)["name"] !== "string"
+  ) {
     throw new Error("Not a valid Flashcut deck file: missing deck name");
   }
   const deckRecord = deck as Record<string, unknown>;
@@ -77,11 +85,16 @@ export function parseDeckExport(data: unknown): DeckExport {
     throw new Error("Not a valid Flashcut deck file: missing cards array");
   }
   const cards = cardsRaw.map((item, index) => {
-    const cardRecord = (typeof item === "object" && item !== null ? item : {}) as Record<string, unknown>;
+    const cardRecord = (typeof item === "object" && item !== null ? item : {}) as Record<
+      string,
+      unknown
+    >;
     const front = cardRecord["front"];
     const back = cardRecord["back"];
     if (typeof front !== "string" || typeof back !== "string") {
-      throw new Error(`Not a valid Flashcut deck file: card ${index + 1} needs front and back strings`);
+      throw new Error(
+        `Not a valid Flashcut deck file: card ${index + 1} needs front and back strings`,
+      );
     }
     const fsrs = parseFsrs(cardRecord["fsrs"]);
     return fsrs ? { front, back, fsrs } : { front, back };

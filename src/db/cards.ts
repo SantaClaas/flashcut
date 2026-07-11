@@ -127,8 +127,8 @@ export async function listCards(db: DbConnection, deckId: number): Promise<CardR
 }
 
 /**
- * The study queue: cards due for review (oldest due first), followed by up to
- * `newLimit` never-studied cards.
+ * The study queue: cards due for review (oldest due first), followed by up to `newLimit`
+ * never-studied cards.
  */
 export async function studyQueue(
   db: DbConnection,

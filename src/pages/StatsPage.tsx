@@ -44,7 +44,10 @@ function BarChart(props: { days: DayBucket[]; class?: string }) {
         {(day) => (
           <div
             class="group relative flex-1 rounded-t bg-teal-600/80 transition-colors hover:bg-teal-500 dark:bg-teal-500/70"
-            style={{ height: `${(day.count / max()) * 100}%`, "min-height": day.count ? "4px" : "1px" }}
+            style={{
+              height: `${(day.count / max()) * 100}%`,
+              "min-height": day.count ? "4px" : "1px",
+            }}
             title={`${day.date.toString()}: ${day.count}`}
           />
         )}

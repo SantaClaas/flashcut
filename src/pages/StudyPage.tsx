@@ -111,8 +111,7 @@ export default function StudyPage() {
                       onClick={() => rate(grade)}
                     >
                       <span class="block">
-                        {GRADE_LABELS[grade]}{" "}
-                        <span class="opacity-60">({gradeIndex() + 1})</span>
+                        {GRADE_LABELS[grade]} <span class="opacity-60">({gradeIndex() + 1})</span>
                       </span>
                       <span class="block text-xs opacity-75">{intervals()?.[grade]}</span>
                     </button>

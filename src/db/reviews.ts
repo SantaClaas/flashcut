@@ -46,7 +46,10 @@ export async function recordReview(
   });
 }
 
-/** Instants of all reviews since `sinceIso`, ascending. Day-bucketing happens in the UI (user timezone). */
+/**
+ * Instants of all reviews since `sinceIso`, ascending. Day-bucketing happens in the UI (user
+ * timezone).
+ */
 export async function reviewTimesSince(db: DbConnection, sinceIso: string): Promise<string[]> {
   const rows = await db.all(
     "SELECT review FROM review_logs WHERE review >= ? ORDER BY review",
@@ -62,8 +65,6 @@ export async function totalReviewCount(db: DbConnection): Promise<number> {
 
 /** Due instants of all scheduled (non-new) cards, for the forecast chart. */
 export async function scheduledDueTimes(db: DbConnection): Promise<string[]> {
-  const rows = await db.all(
-    `SELECT due FROM cards WHERE state != ${State.New} ORDER BY due`,
-  );
+  const rows = await db.all(`SELECT due FROM cards WHERE state != ${State.New} ORDER BY due`);
   return rows.map((row) => String(row["due"]));
 }

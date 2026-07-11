@@ -8,8 +8,8 @@ export const DB_FILE = "flashcut.db";
 let dbPromise: Promise<DbConnection> | undefined;
 
 /**
- * Lazily opens the OPFS-backed database. Rejects (and stays rejected for
- * retry) when another tab already holds the file lock.
+ * Lazily opens the OPFS-backed database. Rejects (and stays rejected for retry) when another tab
+ * already holds the file lock.
  */
 export function getDb(): Promise<DbConnection> {
   dbPromise ??= open().catch((error: unknown) => {

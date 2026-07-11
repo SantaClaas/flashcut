@@ -1,7 +1,6 @@
 /**
- * Stored timestamps are ISO-8601 UTC with exactly 3 fractional digits
- * (matching Date#toISOString), so lexicographic order == chronological order
- * in SQL string comparisons.
+ * Stored timestamps are ISO-8601 UTC with exactly 3 fractional digits (matching Date#toISOString),
+ * so lexicographic order == chronological order in SQL string comparisons.
  */
 export function toIso(instant: Temporal.Instant): string {
   return instant.toString({ fractionalSecondDigits: 3 });

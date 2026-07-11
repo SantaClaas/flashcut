@@ -42,7 +42,14 @@ export default function DeckPage() {
     const db = await getDb();
     const id = editingId();
     if (id == null) {
-      await createCard(db, deckId(), front(), back(), isoNow(), newCardFsrs(Temporal.Now.instant()));
+      await createCard(
+        db,
+        deckId(),
+        front(),
+        back(),
+        isoNow(),
+        newCardFsrs(Temporal.Now.instant()),
+      );
     } else {
       await updateCardContent(db, id, front(), back());
     }
@@ -77,9 +84,7 @@ export default function DeckPage() {
 
         <form onSubmit={submit} class={`${card} space-y-3`}>
           <div class="flex items-center justify-between">
-            <h2 class="text-sm font-semibold">
-              {editingId() == null ? "Add card" : "Edit card"}
-            </h2>
+            <h2 class="text-sm font-semibold">{editingId() == null ? "Add card" : "Edit card"}</h2>
             <label class="flex items-center gap-1.5 text-xs text-stone-500">
               <input
                 type="checkbox"

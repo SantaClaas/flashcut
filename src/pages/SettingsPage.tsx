@@ -81,9 +81,7 @@ export default function SettingsPage() {
               class={input}
               onInput={(event) => setSelectedDeckId(Number(event.currentTarget.value))}
             >
-              <For each={decks()}>
-                {(deck) => <option value={deck.id}>{deck.name}</option>}
-              </For>
+              <For each={decks()}>{(deck) => <option value={deck.id}>{deck.name}</option>}</For>
             </select>
             <button class={btnPrimary} onClick={exportDeck}>
               Export

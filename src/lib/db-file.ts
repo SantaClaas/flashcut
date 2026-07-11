@@ -2,9 +2,8 @@ import { closeDb, DB_FILE, getDb } from "../db/client";
 import { downloadBlob } from "./download";
 
 /**
- * Downloads the raw SQLite file from OPFS. The WAL is checkpointed and the
- * connection closed first so the copied file is complete and consistent; the
- * next query lazily reopens the database.
+ * Downloads the raw SQLite file from OPFS. The WAL is checkpointed and the connection closed first
+ * so the copied file is complete and consistent; the next query lazily reopens the database.
  */
 export async function exportDatabaseFile(): Promise<void> {
   const db = await getDb();
@@ -19,8 +18,8 @@ export async function exportDatabaseFile(): Promise<void> {
 }
 
 /**
- * Replaces the OPFS database with the given SQLite file and reloads the app.
- * Destructive — callers must confirm with the user first.
+ * Replaces the OPFS database with the given SQLite file and reloads the app. Destructive — callers
+ * must confirm with the user first.
  */
 export async function importDatabaseFile(file: File): Promise<void> {
   const bytes = await file.arrayBuffer();

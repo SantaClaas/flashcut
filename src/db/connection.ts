@@ -3,8 +3,8 @@ export type Row = Record<string, SqlValue>;
 
 /**
  * The subset of the Turso database API used by the repositories. Both
- * `@tursodatabase/database-wasm` (browser) and `@tursodatabase/database`
- * (Node, used in tests) satisfy this interface.
+ * `@tursodatabase/database-wasm` (browser) and `@tursodatabase/database` (Node, used in tests)
+ * satisfy this interface.
  */
 export interface DbConnection {
   exec(sql: string): Promise<void>;
