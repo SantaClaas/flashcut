@@ -15,6 +15,13 @@ async function fetchDecks() {
   return listDecks(db, isoNow());
 }
 
+/** Build instant formatted as a local date/time, e.g. "Jul 11, 2026, 10:15 PM". */
+function builtAt(): string {
+  return Temporal.Instant.from(__BUILD_TIME__)
+    .toZonedDateTimeISO(Temporal.Now.timeZoneId())
+    .toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
+
 export default function SettingsPage() {
   const decks = createMemo(() => fetchDecks());
   const [selectedDeckId, setSelectedDeckId] = createSignal<number>();
@@ -116,7 +123,8 @@ export default function SettingsPage() {
       </Show>
 
       <p class="text-center text-xs text-stone-500">
-        Flashcut {__APP_VERSION__} · build <span class="font-mono">{__GIT_COMMIT__}</span>
+        Flashcut {__APP_VERSION__} · build <span class="font-mono">{__GIT_COMMIT__}</span> ·{" "}
+        {builtAt()}
       </p>
     </div>
   );

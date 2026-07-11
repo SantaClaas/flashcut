@@ -11,6 +11,8 @@ declare global {
   // Build-time constants injected via `define` in vite.config.ts.
   const __APP_VERSION__: string;
   const __GIT_COMMIT__: string;
+  /** ISO-8601 UTC instant of when the bundle was built. */
+  const __BUILD_TIME__: string;
 }
 
 export {};
