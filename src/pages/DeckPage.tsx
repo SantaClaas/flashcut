@@ -5,6 +5,7 @@ import { Markdown } from "../components/Markdown";
 import { createCard, deleteCard, listCards, updateCardContent } from "../db/cards";
 import { getDb } from "../db/client";
 import { getDeck } from "../db/decks";
+import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
 import { btnDanger, btnGhost, btnPrimary, card, input } from "../lib/ui";
 import { newCardFsrs } from "../srs/scheduler";
@@ -24,6 +25,11 @@ export default function DeckPage() {
   const deckId = () => Number(params["id"]);
   const deck = createMemo(() => fetchDeck(deckId()));
   const cards = createMemo(() => fetchCards(deckId()));
+
+  useBroadcast((event) => {
+    if (event.data.type === "Decks changed") refresh(deck);
+    if (event.data.type === "Cards changed" && event.data.deckId === deckId()) refresh(cards);
+  });
 
   const [front, setFront] = createSignal("");
   const [back, setBack] = createSignal("");
@@ -55,6 +61,7 @@ export default function DeckPage() {
     }
     resetForm();
     refresh(cards);
+    broadcastMessage({ type: "Cards changed", deckId: deckId() });
   }
 
   async function removeCard(id: number) {
@@ -63,6 +70,7 @@ export default function DeckPage() {
     await deleteCard(db, id);
     if (editingId() === id) resetForm();
     refresh(cards);
+    broadcastMessage({ type: "Cards changed", deckId: deckId() });
   }
 
   function startEditing(id: number, cardFront: string, cardBack: string) {

@@ -2,6 +2,7 @@ import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
 import { getDb } from "../db/client";
 import { listDecks } from "../db/decks";
+import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { exportDatabaseFile, importDatabaseFile } from "../lib/db-file";
 import { exportDeckJson, importDeckJson } from "../lib/deck-json";
 import { downloadBlob } from "../lib/download";
@@ -17,6 +18,10 @@ async function fetchDecks() {
 export default function SettingsPage() {
   const decks = createMemo(() => fetchDecks());
   const [selectedDeckId, setSelectedDeckId] = createSignal<number>();
+
+  useBroadcast((event) => {
+    if (event.data.type === "Decks changed") refresh(decks);
+  });
   const [status, setStatus] = createSignal("");
 
   async function exportDeck() {
@@ -37,6 +42,7 @@ export default function SettingsPage() {
       const db = await getDb();
       await importDeckJson(db, data);
       refresh(decks);
+      broadcastMessage({ type: "Decks changed" });
       setStatus(`Imported “${file.name}”.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : String(error));

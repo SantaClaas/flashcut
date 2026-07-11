@@ -7,6 +7,7 @@ import { studyQueue } from "../db/cards";
 import { getDb } from "../db/client";
 import { getDeck } from "../db/decks";
 import { recordReview } from "../db/reviews";
+import { broadcastMessage } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
 import { btnGhost, btnPrimary, card } from "../lib/ui";
 import { GRADE_LABELS, GRADES, previewIntervals, rateCard } from "../srs/scheduler";
@@ -43,6 +44,9 @@ export default function StudyPage() {
       const { fsrs, log } = rateCard(item, grade, Temporal.Now.instant());
       const db = await getDb();
       await recordReview(db, item.id, fsrs, log);
+      // Other tabs refresh their counts/stats; the session queue here stays
+      // stable on purpose (no useBroadcast) so the card order doesn't shift.
+      broadcastMessage({ type: "Reviews changed", deckId: deckId() });
       setReviewedCount((count) => count + 1);
       setRevealed(false);
       setIndex((i) => i + 1);

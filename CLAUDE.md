@@ -40,6 +40,7 @@ Always use **pnpm** (never npm/npx; use `pnpm dlx` instead of npx).
 - `src/db/{decks,cards,reviews}.ts` — repository functions. All take a `DbConnection` parameter so tests can inject `@tursodatabase/database` (the Node build with an identical async API — this is why tests run in plain Node, no browser needed).
 - `src/srs/` — ts-fsrs wrapper. `mapping.ts` is the ONLY place that converts between ts-fsrs `Date`s, stored ISO strings, and `Temporal` — keep it that way.
 - `src/pages/` — one lazy-loaded component per route (routes defined in `src/index.tsx`).
+- `src/lib/broadcast.ts` — typed cross-tab change events (`Decks/Cards/Reviews changed`) + `useBroadcast` hook. After a mutation, pages call `refresh(...)` locally AND `broadcastMessage(...)` for other tabs (a poster never receives its own broadcast). StudyPage deliberately only emits — its session queue must stay stable.
 - `src/lib/deck-json.ts`, `src/lib/db-file.ts` — deck JSON import/export and raw SQLite file export/import (checkpoint WAL + close connection before touching the OPFS file).
 
 **Dates/times:** use the `Temporal` API, never `Date` (except inside `src/srs/mapping.ts` at the ts-fsrs boundary). `src/index.tsx` conditionally loads `temporal-polyfill` as a separate chunk; `src/test-setup.ts` does the same for tests. All stored timestamps are ISO-8601 UTC with exactly 3 fractional digits (`lib/time.ts#toIso`) — SQL compares them as strings, so a mixed precision silently breaks ordering.
