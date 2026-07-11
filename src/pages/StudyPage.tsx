@@ -1,5 +1,5 @@
 import { A, useParams } from "@solidjs/router";
-import { createMemo, createResource, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { createMemo, createSignal, For, onSettled, refresh, Show } from "solid-js";
 import type { Grade } from "ts-fsrs";
 
 import { Markdown } from "../components/Markdown";
@@ -21,15 +21,15 @@ async function fetchQueue(deckId: number) {
 export default function StudyPage() {
   const params = useParams();
   const deckId = () => Number(params["id"]);
-  const [deck] = createResource(deckId, fetchDeck);
-  const [queue, { refetch }] = createResource(deckId, fetchQueue);
+  const deck = createMemo(() => fetchDeck(deckId()));
+  const queue = createMemo(() => fetchQueue(deckId()));
 
   const [index, setIndex] = createSignal(0);
   const [revealed, setRevealed] = createSignal(false);
   const [reviewedCount, setReviewedCount] = createSignal(0);
   const [busy, setBusy] = createSignal(false);
 
-  const current = () => queue()?.[index()];
+  const current = () => queue()[index()];
   const intervals = createMemo(() => {
     const item = current();
     return item && previewIntervals(item, Temporal.Now.instant());
@@ -51,10 +51,10 @@ export default function StudyPage() {
     }
   }
 
-  async function checkForMore() {
+  function checkForMore() {
     setIndex(0);
     setRevealed(false);
-    await refetch();
+    refresh(queue);
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -69,9 +69,9 @@ export default function StudyPage() {
     if (grade) void rate(grade);
   }
 
-  onMount(() => {
+  onSettled(() => {
     window.addEventListener("keydown", onKeyDown);
-    onCleanup(() => window.removeEventListener("keydown", onKeyDown));
+    return () => window.removeEventListener("keydown", onKeyDown);
   });
 
   return (
@@ -81,7 +81,7 @@ export default function StudyPage() {
           ← {deck()?.name ?? "Deck"}
         </A>
         <span>
-          {reviewedCount()} reviewed · {Math.max((queue()?.length ?? 0) - index(), 0)} left
+          {reviewedCount()} reviewed · {Math.max(queue().length - index(), 0)} left
         </span>
       </div>
 

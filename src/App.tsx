@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { ErrorBoundary, type ParentProps, Show, Suspense } from "solid-js";
+import { Errored, Loading, type ParentProps, Show } from "solid-js";
 
 import { btnGhost, btnPrimary } from "./lib/ui";
 import { colorScheme, toggleColorScheme } from "./stores/theme";
@@ -10,8 +10,11 @@ function navLink(active?: boolean) {
   }`;
 }
 
-function ErrorScreen(props: { error: unknown; reset: () => void }) {
-  const message = () => (props.error instanceof Error ? props.error.message : String(props.error));
+function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
+  const message = () => {
+    const error = props.error();
+    return error instanceof Error ? error.message : String(error);
+  };
   return (
     <div class="mx-auto mt-16 max-w-md text-center">
       <h1 class="text-lg font-semibold">Something went wrong</h1>
@@ -54,11 +57,11 @@ export default function App(props: ParentProps) {
         </nav>
       </header>
       <main>
-        <ErrorBoundary fallback={(error, reset) => <ErrorScreen error={error} reset={reset} />}>
-          <Suspense fallback={<p class="mt-8 text-center text-sm text-stone-500">Loading…</p>}>
+        <Errored fallback={(error, reset) => <ErrorScreen error={error} reset={reset} />}>
+          <Loading fallback={<p class="mt-8 text-center text-sm text-stone-500">Loading…</p>}>
             {props.children}
-          </Suspense>
-        </ErrorBoundary>
+          </Loading>
+        </Errored>
       </main>
     </div>
   );
