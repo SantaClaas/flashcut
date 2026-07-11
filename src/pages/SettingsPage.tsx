@@ -6,6 +6,7 @@ import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { exportDatabaseFile, importDatabaseFile } from "../lib/db-file";
 import { exportDeckJson, importDeckJson } from "../lib/deck-json";
 import { downloadBlob } from "../lib/download";
+import { STARTER_DECKS } from "../lib/starter-decks";
 import { isoNow } from "../lib/time";
 import { btnGhost, btnPrimary, card, input } from "../lib/ui";
 import { colorScheme, toggleColorScheme } from "../stores/theme";
@@ -51,6 +52,21 @@ export default function SettingsPage() {
       refresh(decks);
       broadcastMessage({ type: "Decks changed" });
       setStatus(`Imported “${file.name}”.`);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function addStarterDeck(url: string, name: string) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Could not load deck (HTTP ${response.status})`);
+      const data: unknown = await response.json();
+      const db = await getDb();
+      await importDeckJson(db, data);
+      refresh(decks);
+      broadcastMessage({ type: "Decks changed" });
+      setStatus(`Added “${name}” to your decks.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : String(error));
     }
@@ -102,6 +118,40 @@ export default function SettingsPage() {
           </div>
         </Show>
         <FilePicker label="Import deck from JSON…" accept=".json" onFile={importDeck} />
+      </section>
+
+      <section class={`${card} space-y-3`}>
+        <h2 class="text-sm font-semibold">Deck library</h2>
+        <p class="text-sm text-stone-600 dark:text-stone-400">
+          Ready-made decks bundled with Flashcut. Add one to your decks or download it as a file to
+          share.
+        </p>
+        <ul class="space-y-3">
+          <For each={STARTER_DECKS}>
+            {(starter) => (
+              <li class="flex items-start justify-between gap-4">
+                <div class="min-w-0">
+                  <p class="text-sm font-medium">
+                    {starter.name}{" "}
+                    <span class="font-normal text-stone-500">({starter.cardCount} cards)</span>
+                  </p>
+                  <p class="mt-0.5 text-xs text-stone-500">{starter.description}</p>
+                </div>
+                <div class="flex shrink-0 gap-1">
+                  <button
+                    class={btnPrimary}
+                    onClick={() => void addStarterDeck(starter.url, starter.name)}
+                  >
+                    Add
+                  </button>
+                  <a class={btnGhost} href={starter.url} download>
+                    Download
+                  </a>
+                </div>
+              </li>
+            )}
+          </For>
+        </ul>
       </section>
 
       <section class={`${card} space-y-3`}>

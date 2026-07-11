@@ -1,0 +1,314 @@
+{
+  "version": 1,
+  "exportedAt": "2026-07-11T20:24:03.336Z",
+  "deck": {
+    "name": "Programming Languages (PLC)",
+    "description": "Haskell functional programming, Rust ownership & traits, memory management, error handling, concurrency, and metaprogramming — from the PLC lecture decks and Learn You a Haskell chapters."
+  },
+  "cards": [
+    {
+      "front": "What are the two building blocks of a Haskell program, and what does each do?",
+      "back": "**Expressions** and **declarations**.\n\n- Expressions evaluate to values\n- Declarations bind expressions to names\n\n```haskell\nanswer = 42            -- declaration\ntriple x = x + x + x   -- declaration with parameter\ntriple answer          -- expression evaluating to 126\n```"
+    },
+    {
+      "front": "Write a correct recursive definition of `factorial` in Haskell.",
+      "back": "```haskell\nfactorial :: Integer -> Integer\nfactorial 0 = 1\nfactorial n = n * factorial (n - 1)\n```\n\nBase case `0 → 1`, recursive case multiplies by the factorial of `n - 1` (not `n + 1`, which never terminates)."
+    },
+    {
+      "front": "How are lists defined inductively in Haskell, and what are the two fundamental constructors?",
+      "back": "A list is either the **empty list** `[]` or a **head prepended to a tail**: `x : xs`.\n\n`[1,2,3]` is sugar for `1 : 2 : 3 : []`."
+    },
+    {
+      "front": "Implement `myLength` for lists using pattern matching.",
+      "back": "```haskell\nmyLength :: [a] -> Int\nmyLength [] = 0\nmyLength (x:xs) = 1 + myLength xs\n```\n\nPattern matching **deconstructs** the value: `[]` matches the empty list, `(x:xs)` binds head and tail."
+    },
+    {
+      "front": "What does a list comprehension look like in Haskell? Give one with a predicate.",
+      "back": "```haskell\n[ x * 2 | x <- [1..10], x * 2 >= 12 ]\n-- [12,14,16,18,20]\n```\n\nOutput expression before `|`, then generators (`x <- [1..10]`) and predicates (filters), comma-separated."
+    },
+    {
+      "front": "Lists vs tuples in Haskell — what are the key type differences?",
+      "back": "- **Lists** are homogeneous (all elements the same type) and have arbitrary length; `[1,2,3] :: [Int]`\n- **Tuples** have fixed size, may mix types, and the size/types are part of the tuple's type: `(1, \"one\") :: (Int, String)`\n- `(Int, String)` and `(Int, String, Bool)` are entirely different types"
+    },
+    {
+      "front": "What does `::` mean in Haskell, and what does the signature `head :: [a] -> a` tell you?",
+      "back": "`::` reads \"has type\".\n\n`head :: [a] -> a` — `a` is a **type variable**, so `head` is **polymorphic**: it takes a list of any element type and returns one value of that same type."
+    },
+    {
+      "front": "What is a typeclass in Haskell? Name four standard ones.",
+      "back": "A typeclass defines an **interface of behavior**: types that are instances of the class implement its functions. (Similar role to interfaces, closest analog to Rust traits.)\n\nStandard examples: `Eq` (equality), `Ord` (ordering), `Show` (to string), `Num` (numeric literals/arithmetic)."
+    },
+    {
+      "front": "What does the `=>` part of `elem :: Eq a => a -> [a] -> Bool` mean?",
+      "back": "Everything before `=>` is a **class constraint**: `a` can be any type **as long as it is an instance of `Eq`**, because `elem` needs `==` on the elements."
+    },
+    {
+      "front": "What are guards in Haskell and how do they differ from pattern matching?",
+      "back": "Guards test **boolean conditions** after the patterns matched:\n\n```haskell\nclassify n\n  | n < 0     = \"negative\"\n  | n == 0    = \"zero\"\n  | otherwise = \"positive\"\n```\n\nPatterns check the **structure/value shape** of input; guards check arbitrary conditions."
+    },
+    {
+      "front": "Difference between `where` and `let … in` in Haskell?",
+      "back": "Both introduce local bindings.\n\n- `where` comes **after** the function body and is visible to all guards/branches of that equation\n- `let … in` is an **expression** usable anywhere, bindings visible only in the `in` part\n\n```haskell\narea r = let pi2 = 2 * pi in pi2 * r\n\nbmi w h = w / sq\n  where sq = h * h\n```"
+    },
+    {
+      "front": "What is a `case` expression in Haskell and where can you use it?",
+      "back": "Pattern matching **as an expression**, usable anywhere an expression fits:\n\n```haskell\ndescribe xs = case xs of\n  []  -> \"empty\"\n  [_] -> \"singleton\"\n  _   -> \"longer\"\n```\n\nPattern matching in function definitions is sugar for `case`."
+    },
+    {
+      "front": "What are algebraic data types? Explain **sum** and **product** types.",
+      "back": "Types built from two combinations:\n\n- **Sum types**: alternation `A | B` — a value is *one of* several variants\n- **Product types**: combination — a constructor *bundles* several fields\n\n```haskell\ndata Shape = Circle Float        -- sum: Circle OR Rectangle\n           | Rectangle Float Float  -- product: two fields\n```"
+    },
+    {
+      "front": "Write a Haskell function `area` for\n\n```haskell\ndata Shape = Circle Float | Rectangle Float Float\n```",
+      "back": "```haskell\narea :: Shape -> Float\narea (Circle r)      = pi * r ^ 2\narea (Rectangle w h) = w * h\n```\n\nPattern matching on the **value constructors** extracts their fields."
+    },
+    {
+      "front": "In a Haskell `data` declaration, what are value constructors, and what is special about them?",
+      "back": "The names after `=` (e.g. `Circle`, `Rectangle`). They are **functions** that take the fields and return a value of the type:\n\n`Circle :: Float -> Shape`\n\nSo they can be partially applied, mapped, etc. like any function."
+    },
+    {
+      "front": "What does record syntax in Haskell give you over plain positional fields?",
+      "back": "```haskell\ndata Person = Person { name :: String, age :: Int }\n```\n\n- Named **accessor functions** for free (`name :: Person -> String`)\n- Construction/update by field name: `p { age = 31 }`\n- Self-documenting `Show` output"
+    },
+    {
+      "front": "What is a type constructor with a type parameter? Use `Maybe` as the example.",
+      "back": "```haskell\ndata Maybe a = Nothing | Just a\n```\n\n`Maybe` is a **type constructor**: applied to a concrete type it produces one (`Maybe Int`). `a` is a type parameter, so one declaration covers optional values of every type."
+    },
+    {
+      "front": "What does `deriving (Show, Eq)` after a data declaration do?",
+      "back": "The compiler **auto-generates typeclass instances**: `Show` (convert to string) and `Eq` (structural `==`/`/=`) for the type — no boilerplate implementations needed. (Same idea as Rust's `#[derive(Debug, PartialEq)]`.)"
+    },
+    {
+      "front": "Define a recursive data structure in Haskell (your own list or a binary tree).",
+      "back": "```haskell\ndata List a = Empty | Cons a (List a)\n\ndata Tree a = Leaf\n            | Node (Tree a) a (Tree a)\n```\n\nA constructor field can be the type itself — that self-reference makes it recursive, just like `[]`/`(:)` for built-in lists."
+    },
+    {
+      "front": "How do you make a type an instance of a typeclass manually (no deriving)?",
+      "back": "```haskell\ndata TrafficLight = Red | Yellow | Green\n\ninstance Eq TrafficLight where\n  Red == Red       = True\n  Yellow == Yellow = True\n  Green == Green   = True\n  _ == _           = False\n```\n\n`instance Class Type where` + implementations of the class's functions."
+    },
+    {
+      "front": "What is a type synonym in Haskell (`type`), and does it create a new type?",
+      "back": "```haskell\ntype PhoneBook = [(String, String)]\n```\n\n**No new type** — just another name for an existing one, interchangeable everywhere. Purely for readability (contrast with `data`, which creates a genuinely new type)."
+    },
+    {
+      "front": "What is a higher-order function?",
+      "back": "A function that **takes functions as arguments and/or returns a function**.\n\n```haskell\nbelow :: Ord a => a -> a -> Bool\nbelow threshold = \\x -> x < threshold\n\nfilter (below 5) [1, 3, 5, 7, 9]  -- [1,3]\n```"
+    },
+    {
+      "front": "\"All Haskell functions are curried\" — what does that mean, and what is partial application?",
+      "back": "Every function really takes **one argument** and returns another function: `Int -> Int -> Int` is `Int -> (Int -> Int)`.\n\n**Partial application** = supplying fewer arguments to get a specialized function:\n\n```haskell\nadd x y = x + y\nadd5 = add 5\nmap add5 [1,2,3]  -- [6,7,8]\n```"
+    },
+    {
+      "front": "What do `map`, `filter`, and `foldr` each do?",
+      "back": "- `map f xs` — **transform** each element\n- `filter p xs` — **select** elements satisfying the predicate\n- `foldr f z xs` — **reduce** the list to a single value\n\n```haskell\nmap (*2) [1,2,3]        -- [2,4,6]\nfilter even [1,2,3,4]   -- [2,4]\nfoldr (+) 0 [1,2,3,4,5] -- 15\n```"
+    },
+    {
+      "front": "Write `sum` two ways: with a fold and with explicit recursion.",
+      "back": "```haskell\nsum' xs = foldr (+) 0 xs\n\nsum'' []     = 0\nsum'' (n:ns) = n + sum'' ns\n```\n\nThe fold captures exactly the recursion pattern: combine head with the folded rest, starting from the accumulator `0`."
+    },
+    {
+      "front": "What is a lambda expression in Haskell and when do you use one?",
+      "back": "An **anonymous function**: `\\x -> x < threshold` (backslash mimics λ).\n\nUse for small one-off functions passed to higher-order functions:\n\n```haskell\nfoldr (\\c a -> if c > a then c else a) 0 xs\n```"
+    },
+    {
+      "front": "`foldl` vs `foldr` — how do they associate, and why does it matter?",
+      "back": "```haskell\nfoldl f z [a,b,c] = ((z `f` a) `f` b) `f` c   -- left-assoc\nfoldr f z [a,b,c] = a `f` (b `f` (c `f` z))   -- right-assoc\n```\n\nSame result only for associative operations. `foldr` works on infinite lists when `f` is lazy in its second argument; `foldl` builds the result from the left."
+    },
+    {
+      "front": "What do the `$` and `.` operators do in Haskell?",
+      "back": "- `$` — function application with **lowest precedence**: `print $ 1 + 2` avoids parentheses (`print (1 + 2)`)\n- `.` — **function composition**: `(f . g) x = f (g x)`\n\n```haskell\nmap (negate . abs) [5, -3]  -- [-5,-3]\n```"
+    },
+    {
+      "front": "What is the IO monad for in Haskell, and what are its key properties?",
+      "back": "`IO a` **wraps computations with side effects** (result type `a`).\n\n- `do` notation sequences IO actions\n- Values cannot escape the IO monad — pure code stays pure\n\n```haskell\nmain :: IO ()\nmain = do\n  putStrLn \"What is your name?\"\n  name <- getLine\n  putStrLn (\"Hello, \" ++ name ++ \"!\")\n```"
+    },
+    {
+      "front": "De-sugar this do block, given `randomInt :: IO Int` and `print :: Show a => a -> IO ()`:\n\n```haskell\nmain = do\n  num <- randomInt\n  print num\n```",
+      "back": "```haskell\nmain = randomInt >>= print\n```\n\n`x <- action` followed by a use of `x` becomes `action >>= \\x -> …`. (`>>` would discard the result instead.)"
+    },
+    {
+      "front": "How does the Maybe monad handle failure? Show `safeDiv`.",
+      "back": "`Maybe a` represents **presence (`Just`) or absence (`Nothing`)** and chains computations that might fail — the first `Nothing` short-circuits the rest.\n\n```haskell\nsafeDiv :: Int -> Int -> Maybe Int\nsafeDiv _ 0 = Nothing\nsafeDiv x y = Just (x `div` y)\n```"
+    },
+    {
+      "front": "`Maybe` vs `Either` for error handling in Haskell?",
+      "back": "- `Maybe a` — success or **absence**, no error details (`Just` / `Nothing`)\n- `Either e a` — success (`Right a`) or a **descriptive error** (`Left e`)\n\nUse `Either` when the caller needs to know *why* it failed."
+    },
+    {
+      "front": "Stack vs heap allocation — what goes where, and what are the trade-offs?",
+      "back": "- **Stack**: automatic; function arguments, return values, locals. Freed when the function returns; fixed-size region; very fast\n- **Heap**: everything that outlives a call or has dynamic/unknown size; must be managed (manually, GC, RC, or ownership)"
+    },
+    {
+      "front": "Name the three classic bug classes of manual memory management (malloc/free).",
+      "back": "1. **Memory leak** — unused memory never released\n2. **Double free** — memory released more than once\n3. **Dangling pointer** — use of already-released memory\n\nAll cause undefined behavior. Microsoft: ~70% of their CVEs (2006–2018) were memory-safety issues."
+    },
+    {
+      "front": "How does tracing garbage collection work, and what are its main problems?",
+      "back": "Program never frees; when memory runs low the GC runs a **collection cycle**: find **reachable** blocks starting from the stack (mark-and-sweep; generational/incremental/concurrent variants), reclaim the rest.\n\nProblems: reachability analysis is expensive, execution pauses (\"stop-the-world\") at arbitrary times — bad for latency/real-time; finalization timing is non-deterministic."
+    },
+    {
+      "front": "How does reference counting (RC/ARC) work, and what is its classic weakness?",
+      "back": "Every allocation keeps a **count of references** to it; duplicating a pointer increments, dropping decrements; at zero the memory is freed immediately.\n\nWeakness: **reference cycles** never reach zero — handled with *weak references*. ARC (Clang/Swift/Objective-C) inserts the counting code automatically at compile time."
+    },
+    {
+      "front": "What is RAII, and which Rust feature embodies it?",
+      "back": "**Resource Acquisition Is Initialization** (Stroustrup, C++): a resource's lifetime is bound to an object's lifetime — acquire in the constructor, release in the destructor, which the compiler calls automatically on scope exit (even during unwinding). Works for files, locks, sockets, memory.\n\nRust's **`Drop` trait** is the same idea, enforced by the compiler; C++ smart pointers (`unique_ptr`, `shared_ptr`) are RAII for heap memory."
+    },
+    {
+      "front": "How does Rust's ownership model compare to GC and reference counting?",
+      "back": "Ownership rules are checked **at compile time**: violating code doesn't compile, compiled code is guaranteed memory safe.\n\n- Memory safe like GC/RC, but **zero runtime overhead**\n- No latency/throughput impact, no stop-the-world pauses\n- No problem with cyclic references\n- Deterministic destruction (like RAII)"
+    },
+    {
+      "front": "State Rust's three ownership rules.",
+      "back": "1. Each value in Rust **has an owner**\n2. There can only be **one owner at a time**\n3. When the owner **goes out of scope, the value is dropped**"
+    },
+    {
+      "front": "Why doesn't this compile?\n\n```rust\nlet s1 = String::from(\"hello\");\nlet s2 = s1;\nprintln!(\"{s1}\");\n```",
+      "back": "Assignment **moves** the `String` (it doesn't implement `Copy`): `s2` becomes the owner and `s1` is **invalidated**. Using `s1` afterwards is a compile error — this prevents a double free of the heap buffer. Use `s1.clone()` for a deep copy."
+    },
+    {
+      "front": "Rust traits `Copy` vs `Clone` — what's the difference?",
+      "back": "- `Copy`: marker trait (no methods) for types that can be copied **bit by bit**; assignment copies instead of moving (e.g. `i32`). Only definable for clonable types: `trait Copy: Clone`\n- `Clone`: defines `clone()` for **explicit** (possibly deep/expensive) duplication (e.g. `String`)"
+    },
+    {
+      "front": "What is borrowing in Rust, and what are the two reference rules?",
+      "back": "Borrowing passes a **reference** (`&T` immutable, `&mut T` mutable) without transferring ownership.\n\nRules, enforced at compile time:\n1. Only **one mutable** reference to a value at a time\n2. **Never** a mutable and an immutable reference at the same time\n\n(Any number of simultaneous immutable references is fine.)"
+    },
+    {
+      "front": "Why does Rust forbid a mutable reference alongside other references?",
+      "back": "It statically prevents **data races**: no one can observe a value while someone else may mutate it. The same aliasing-XOR-mutability guarantee is what makes Rust's concurrency \"fearless\" — the compiler rejects racy code."
+    },
+    {
+      "front": "What are slices in Rust? What type does a string literal have and why is it immutable?",
+      "back": "Slices are **references to parts of a collection**: `&s[0..5]` (`&str` for strings, `&[T]` for vectors/arrays). They don't own data — they borrow.\n\nString literals are `&'static str`: slices pointing at data embedded in the binary, hence immutable."
+    },
+    {
+      "front": "What problem do lifetimes solve in Rust, and why does `longest` need an annotation?\n\n```rust\nfn longest(x: &str, y: &str) -> &str\n```",
+      "back": "Lifetimes ensure **references never outlive the data they point to** (no dangling references). Most are inferred.\n\n`longest` returns *either* `x` or `y`, so the compiler can't infer the return lifetime:\n\n```rust\nfn longest<'a>(x: &'a str, y: &'a str) -> &'a str {\n    if x.len() > y.len() { x } else { y }\n}\n```\n\n`'a` says: the result lives at most as long as the shorter-lived input."
+    },
+    {
+      "front": "What does the lifetime parameter mean in\n\n```rust\nstruct Person<'a> { name: &'a str }\n```",
+      "back": "The struct **holds a reference**, and the annotation ties the struct's validity to it: an instance of `Person` **cannot outlive the data that `name` references**. The compiler rejects code where the referenced string is dropped while the struct is still used."
+    },
+    {
+      "front": "What is the `'static` lifetime in Rust? Give two places it appears.",
+      "back": "A lifetime lasting the **entire program**.\n\n- String literals: `\"hello\"` is `&'static str` (data embedded in the binary)\n- `thread::spawn` requires `'static` captures (the thread may outlive the caller's stack)\n- Global constants, library error messages"
+    },
+    {
+      "front": "How do generics look in Rust? Write `largest` for any orderable element type.",
+      "back": "```rust\nfn largest<T: Ord>(list: &[T]) -> &T {\n    let mut largest = &list[0];\n    for item in list {\n        if item > largest { largest = item; }\n    }\n    largest\n}\n```\n\n`<T: Ord>` is a **trait bound** — like Haskell's `Ord a => [a] -> a` or Java's `<T extends Comparable<T>>`."
+    },
+    {
+      "front": "What is a Rust trait, and what are its counterparts in Java, C++, and Haskell?",
+      "back": "A trait declares **shared behavior** a type can implement:\n\n```rust\npub trait Summary {\n    fn summarize(&self) -> String;\n}\nimpl Summary for Tweet { /* … */ }\n```\n\nCounterparts: **interface** (Java/C#), **abstract class** (C++), **typeclass** (Haskell)."
+    },
+    {
+      "front": "Show three equivalent ways to accept \"any type implementing `Summary`\" as a parameter in Rust.",
+      "back": "```rust\nfn notify(item: &impl Summary) { … }        // impl Trait\nfn notify<T: Summary>(item: &T) { … }       // trait bound\nfn notify<T>(item: &T) where T: Summary { … } // where clause\n```\n\n`where` keeps signatures readable with several bounds like `T: Display + Clone`."
+    },
+    {
+      "front": "Static vs dynamic dispatch in Rust — how are traits usually dispatched, and what changes with `dyn Trait`?",
+      "back": "- **Static** (default, like Haskell typeclasses): the compiler picks the implementation per call site — zero runtime cost (monomorphization)\n- **Dynamic** with trait objects (`dyn Trait`): concrete type erased; calls go through a **vtable** of function pointers — small lookup cost, like OO virtual methods"
+    },
+    {
+      "front": "Why store `Box<dyn Summary>` in a `Vec` instead of `Vec<T: Summary>`?",
+      "back": "`Vec` needs elements of one known size; different types implementing `Summary` have different sizes, and trait objects are **unsized**. Boxing gives every element a uniform size (a pointer) while allowing mixed concrete types — Rust's subtype polymorphism without inheritance.\n\nAlternatives: `&dyn Summary` (borrowed), `Rc<dyn Summary>`/`Arc` (shared)."
+    },
+    {
+      "front": "Name the four error-handling mechanism families and an example language for each.",
+      "back": "1. **Return values** — Go (multiple returns), Rust (`Result`), Haskell (`Maybe`/`Either`)\n2. **Exceptions** — Java (checked/unchecked), Python, JavaScript\n3. **Panic/abort** — Rust `panic!`, Go `panic`\n4. **Resource management** — Python `with`, Go `defer`, `finally`, C++/Rust RAII"
+    },
+    {
+      "front": "Pros and cons of return-value error handling (Result/Either/multiple returns)?",
+      "back": "**Pros**: errors explicit in signatures and call sites; type system makes the error case statically visible (exhaustive matching); predictable control flow; no unwinding machinery.\n\n**Cons**: verbose repetitive checks; must design error types/conversions; can nest deeply — languages add sugar (Rust `?`) to compensate. Go anti-pattern: discarding `err` with `_` silently ignores failure."
+    },
+    {
+      "front": "Pros and cons of exception-based error handling?",
+      "back": "**Pros**: separates error handling from happy path; handle at the right abstraction level; centralized handling; stack traces.\n\n**Cons**: *invisible control flow* not apparent in code; exception swallowing; runtime cost; possible resource leaks without cleanup blocks; few compile-time guarantees (only Java's *checked* exceptions are compiler-enforced). Haskell confines exceptions to `IO`."
+    },
+    {
+      "front": "Define Rust's `Result` type and the meaning of its variants.",
+      "back": "```rust\nenum Result<T, E> {\n    Ok(T),   // success, wraps the result\n    Err(E),  // failure, wraps the error\n}\n```\n\nFunctions that can fail return `Result`, encoding the error in the type and forcing the caller to deal with it."
+    },
+    {
+      "front": "Rust rule of thumb: when `panic!` and when `Result`?",
+      "back": "- Would a reasonable caller want to **recover**? → `Result` (I/O errors, parse errors, missing files, bad user input)\n- Is reaching this point a **bug**? → `panic!` (violated invariants the code itself guarantees; also `assert!`, `debug_assert!`, `unreachable!`)\n\n\"Dead programs tell no lies\" — crashing loudly beats corrupting data."
+    },
+    {
+      "front": "Difference between `unwrap()` and `expect()` on `Result`/`Option`?",
+      "back": "Both extract the success value and **panic on error** — `unwrap()` with the original error message, `expect(\"context\")` with your custom message. Fine for prototypes and impossible-error cases; otherwise handle or propagate."
+    },
+    {
+      "front": "What does Rust's `?` operator do? Rewrite this without `match`:\n\n```rust\nlet mut file = match File::open(path) {\n    Ok(f) => f,\n    Err(e) => return Err(e),\n};\n```",
+      "back": "`?` unwraps `Ok` or **early-returns the `Err`** (converting the error type via `From` if needed):\n\n```rust\nlet mut file = File::open(path)?;\n```\n\nWorks in functions returning `Result` (including `main() -> Result<(), E>`)."
+    },
+    {
+      "front": "What is the \"Billion Dollar Mistake\", and how does Rust avoid it?",
+      "back": "**Null references** — introduced by Tony Hoare (ALGOL W, 1965), his own label. The problem: any reference may be null, but the type system doesn't say so.\n\nRust has **no null**: absence is `Option<T>` (`Some(T)` / `None`), so the compiler forces you to handle the empty case before using the value."
+    },
+    {
+      "front": "Rust error crates: when `thiserror`, when `anyhow`?",
+      "back": "- `thiserror` — **libraries**: derive macro for concrete, documented error enums callers can match on programmatically\n- `anyhow` — **applications**: one type-erased `anyhow::Error` for everything, `.context(...)` chains explanation\n\nCommon pattern: library defines `thiserror` types, application wraps them in `anyhow`."
+    },
+    {
+      "front": "Which cleanup constructs do Go, Python, Java, and C++/Rust use to release resources on all paths?",
+      "back": "- Go: `defer f.Close()` — runs on every return\n- Python: `with open(...) as f:` — context manager\n- Java/JS/Python: `finally` blocks\n- C++/Rust: **RAII** / `Drop` — destructor runs at scope exit, no keyword needed and it composes"
+    },
+    {
+      "front": "Concurrency vs parallelism — what's the distinction?",
+      "back": "- **Concurrency** is about **structure**: managing multiple tasks in overlapping time periods, *dealing with* many things at once (they may interleave on one core)\n- **Parallelism** is about **execution**: literally simultaneous execution, requires multiple cores, *doing* many things at once"
+    },
+    {
+      "front": "Name five concurrency models.",
+      "back": "1. **OS threads** (shared state; Java, Rust)\n2. **Event loop** with callbacks/promises (JS/Node — single-threaded, non-blocking IO)\n3. **Green threads / virtual threads** — lightweight user-space threads, thousands multiplexed onto OS threads by the runtime\n4. **CSP** — communicating sequential processes: threads share nothing and communicate via **channels** (Go)\n5. **Actor model** — isolated actors exchanging messages (Erlang/Akka)"
+    },
+    {
+      "front": "Two threads each increment a shared counter 10,000 times without synchronization (Java). What happens and why?",
+      "back": "A **race condition**: it compiles but the final count is usually **less than 20,000** and varies per run. `counter += 1` is read-modify-write; interleaved threads overwrite each other's updates. Fixes: locks/atomics — or Rust, where the compiler rejects unsynchronized shared mutation."
+    },
+    {
+      "front": "What are `Arc<T>` and `Mutex<T>` in Rust and why are they usually combined?",
+      "back": "- `Arc<T>`: **atomic reference counting** — shared ownership across threads\n- `Mutex<T>`: **mutual exclusion** — lock to get exclusive access to the inner value\n\n```rust\nlet counter = Arc::new(Mutex::new(0));\nlet c = counter.clone();\nthread::spawn(move || { *c.lock().unwrap() += 10; });\n```\n\n`Arc` shares it, `Mutex` makes mutation safe."
+    },
+    {
+      "front": "Rust's `Send` and `Sync` traits — what does each mean?",
+      "back": "- `Send`: the type can be **transferred** to another thread\n- `Sync`: the type can be **shared** between threads (`&T` is `Send`)\n\nAuto-implemented by the compiler when safe; most types are `Send`. `Rc<T>` is *not* `Send` (non-atomic counts — use `Arc`). Checked at **compile time** → \"fearless concurrency\"."
+    },
+    {
+      "front": "In JavaScript, what problem did promises and `async/await` solve?",
+      "back": "Non-blocking IO with plain callbacks nests pathologically (\"**callback hell**\") and hides sequencing. Promises flatten it (`.then` chains); `async/await` restores a sequential-looking style over the same single-threaded **event loop**, without blocking it."
+    },
+    {
+      "front": "Why is blocking (synchronous) IO a problem in Node.js specifically?",
+      "back": "Node runs JS on a **single-threaded event loop**: a blocking call (e.g. `fs.readFileSync`) blocks the *entire* loop — nothing else (requests, timers, callbacks) runs until it finishes. IO is slow, so all IO is offered as non-blocking/async APIs."
+    },
+    {
+      "front": "What is metaprogramming and why use it? Name the three approaches on the spectrum.",
+      "back": "**Code that writes code** — eliminating boilerplate the language would force you to repeat.\n\nSpectrum:\n1. **Text substitution** — C preprocessor: simple, dangerous\n2. **Syntax transformation** — Scheme/Rust macros: powerful, safe\n3. **Reflection** — Java/Python: runtime cost"
+    },
+    {
+      "front": "Why is this C macro dangerous?\n\n```c\n#define MAX(a, b) ((a) > (b) ? (a) : (b))\nint result = MAX(i++, j++);\n```",
+      "back": "It expands to `((i++) > (j++) ? (i++) : (j++))` — the winning argument is **evaluated twice** (here `j` increments twice). The preprocessor substitutes **text** without understanding C syntax or semantics; no type checking either. Legit use: conditional compilation (`#ifdef DEBUG`)."
+    },
+    {
+      "front": "What is homoiconicity, and how does quasiquotation build code in Lisp/Scheme?",
+      "back": "**Homoiconicity**: code and data share one representation — `(+ 1 2)` is code, `'(+ 1 2)` is a list. Macros are just list manipulation.\n\nQuasiquotation: backtick quotes a template, comma unquotes (inserts values), `,@` splices a list:\n\n```scheme\n`(+ ,x ,y)     ; template with holes\n`(+ ,@nums)    ; splice '(1 2 3) in\n```"
+    },
+    {
+      "front": "What is macro hygiene, and which systems are hygienic vs not?",
+      "back": "A **hygienic** macro system renames the macro's local variables so they cannot capture/shadow variables at the use site — preventing subtle bugs (e.g. a macro-internal `temp` colliding with the user's `temp`).\n\n- Unhygienic: Scheme `define-macro`, C preprocessor\n- Hygienic: Scheme `syntax-rules`, Rust `macro_rules!`"
+    },
+    {
+      "front": "What are Rust's two macro flavors? Give an example of each in use.",
+      "back": "- **Declarative** (`macro_rules!`): pattern-match on syntax; hygienic. E.g. `vec![1, 2, 3]` expands to push calls\n- **Procedural**, notably **derive macros**: `#[derive(Debug, Clone, PartialEq)]` generates trait implementations at compile time\n\nUnlike C macros, both operate on **syntax**, not text."
+    },
+    {
+      "front": "When is a computational system Turing complete?",
+      "back": "When it **can simulate a Turing machine** (compute anything a Turing machine can, ignoring resource limits). Note the direction: the system simulates the Turing machine — not the other way around."
+    },
+    {
+      "front": "Key concepts summary: what does functional programming (Haskell) contribute vs systems programming (Rust)?",
+      "back": "**Haskell**: pure functions & immutability, algebraic data types & pattern matching, higher-order functions & currying, monads for effect management.\n\n**Rust**: ownership/borrowing/lifetimes, compile-time safety guarantees, fearless concurrency.\n\nShared theme: pushing error detection to **compile time** via strong type systems."
+    }
+  ]
+}
