@@ -7,6 +7,10 @@ declare global {
   interface Date {
     toTemporalInstant(this: Date): Temporal.Instant;
   }
+
+  // Build-time constants injected via `define` in vite.config.ts.
+  const __APP_VERSION__: string;
+  const __GIT_COMMIT__: string;
 }
 
 export {};
