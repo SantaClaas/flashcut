@@ -3,6 +3,7 @@ import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
 import { getDb } from "../db/client";
 import { createDeck, deleteDeck, listDecks } from "../db/decks";
+import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
 import { btnDanger, btnGhost, btnPrimary, card, input } from "../lib/ui";
 
@@ -15,6 +16,9 @@ export default function DeckListPage() {
   const decks = createMemo(() => fetchDecks());
   const [name, setName] = createSignal("");
 
+  // Deck names, card counts, and due counts all show here — any change matters.
+  useBroadcast(() => refresh(decks));
+
   async function addDeck(event: SubmitEvent) {
     event.preventDefault();
     const trimmed = name().trim();
@@ -23,6 +27,7 @@ export default function DeckListPage() {
     await createDeck(db, trimmed, "", isoNow());
     setName("");
     refresh(decks);
+    broadcastMessage({ type: "Decks changed" });
   }
 
   async function removeDeck(id: number, deckName: string) {
@@ -30,6 +35,7 @@ export default function DeckListPage() {
     const db = await getDb();
     await deleteDeck(db, id);
     refresh(decks);
+    broadcastMessage({ type: "Decks changed" });
   }
 
   return (

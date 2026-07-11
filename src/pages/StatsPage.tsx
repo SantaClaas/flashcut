@@ -1,7 +1,8 @@
-import { createMemo, For } from "solid-js";
+import { createMemo, For, refresh } from "solid-js";
 
 import { getDb } from "../db/client";
 import { reviewTimesSince, scheduledDueTimes, totalReviewCount } from "../db/reviews";
+import { useBroadcast } from "../lib/broadcast";
 import { toIso, toLocalDay } from "../lib/time";
 import { card } from "../lib/ui";
 
@@ -58,6 +59,10 @@ function BarChart(props: { days: DayBucket[]; class?: string }) {
 
 export default function StatsPage() {
   const stats = createMemo(() => fetchStats());
+
+  useBroadcast((event) => {
+    if (event.data.type === "Reviews changed") refresh(stats);
+  });
 
   const reviewsByDay = createMemo(() => {
     const byDay = new Map<string, number>();
