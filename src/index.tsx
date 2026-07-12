@@ -17,6 +17,9 @@ if (!("Temporal" in globalThis)) {
 await import("./stores/color-scheme");
 await import("./stores/font-size");
 
+// Register the service worker (no-op in dev) and start update polling.
+await import("./stores/sw-update");
+
 const { default: App } = await import("./App");
 
 render(

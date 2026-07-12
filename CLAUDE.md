@@ -28,6 +28,8 @@ Always use **pnpm** (never npm/npx; use `pnpm dlx` instead of npx).
 - `pnpm test` — run all tests (Vitest, Node environment)
 - `pnpm vitest run src/db/repositories.test.ts` — run a single test file
 - `pnpm typecheck` — typecheck only
+- `pnpm test:pwa` — build, then verify offline PWA behavior in headless Chromium (`scripts/pwa-smoke.mjs`)
+- `pnpm icons` — regenerate the `public/` PNG icon set from `public/favicon.svg`
 
 ## Architecture
 
@@ -50,3 +52,5 @@ Always use **pnpm** (never npm/npx; use `pnpm dlx` instead of npx).
 **Styling:** Tailwind v4 (CSS-first config in `src/index.css`). Components use `dark:` utilities; the `dark` custom variant resolves to the system preference by default, overridden when `data-color-scheme` is pinned on `<html>`. The same resolution drives the CSS `color-scheme` property (`:root { color-scheme: light dark }` + data-attribute overrides) so native UI matches. `src/stores/color-scheme.ts` manages the setting (`system`/`light`/`dark`, persisted to localStorage under `color-scheme`; an inline script in `index.html` applies a pinned scheme pre-render). Font size works the same way: `src/stores/font-size.ts` sets `data-font-size`, which selects a `--font-scale` applied to the root font-size. Reusable component classes (`btn-primary`, `btn-ghost`, `btn-danger`, `input`, `card`, `nav-link`, `grade-btn`) are defined with `@apply` in `@layer components` in `src/index.css`; utilities override them, so variations are written as e.g. `class="btn-primary w-full py-4"`. State-dependent styling uses data/aria attributes with Tailwind variants (`data-grade`, `aria-current`), not JS-composed class strings.
 
 **Markdown:** card fronts/backs are markdown, rendered by `src/components/Markdown.tsx` via marked + DOMPurify. Never render card content with raw `innerHTML` without sanitizing.
+
+**PWA:** `vite-plugin-pwa` (Workbox `generateSW`) precaches the entire build — including the ~9 MB Turso WASM (`maximumFileSizeToCacheInBytes` is raised for it; Workbox's 2 MB default would silently drop it and break offline) and the starter decks. Updates are `registerType: "prompt"`, never auto-reload: `src/stores/sw-update.ts` registers the SW (no-op in dev), polls for updates hourly + on tab visibility, and exposes signals consumed by the toast in `App.tsx` and the "Check for updates" button in Settings. Cache-served responses keep their COOP/COEP headers, which is what keeps `crossOriginIsolated` true offline — `pnpm test:pwa` asserts this, and `src/pwa-precache.test.ts` asserts nothing falls out of the precache manifest (needs a prior build; skips without `dist/`). `public/_headers` serves `sw.js`/manifest with `no-cache` so updates propagate immediately. Typecheck is split into three projects: app (browser types), node (vite config), test (`tsconfig.test.json`, Node + DOM types for `src/**/*.test.ts`).

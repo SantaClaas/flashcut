@@ -15,6 +15,7 @@ import {
   setColorScheme,
 } from "../stores/color-scheme";
 import { FONT_SIZES, type FontSize, fontSize, setFontSize } from "../stores/font-size";
+import { checkForUpdate } from "../stores/sw-update";
 
 const COLOR_SCHEME_LABELS: Record<ColorScheme, string> = {
   system: "System",
@@ -87,6 +88,16 @@ export default function SettingsPage() {
       setStatus(`Added “${name}” to your decks.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function checkUpdates() {
+    setStatus("Checking for updates…");
+    try {
+      const found = await checkForUpdate();
+      setStatus(found ? "Update ready — use the reload prompt to apply it." : "You're up to date.");
+    } catch {
+      setStatus("Couldn't check for updates — are you offline?");
     }
   }
 
@@ -221,6 +232,11 @@ export default function SettingsPage() {
       <p class="text-center text-xs text-stone-500">
         Flashcut {__APP_VERSION__} · build <span class="font-mono">{__GIT_COMMIT__}</span> ·{" "}
         {builtAt()}
+      </p>
+      <p class="text-center">
+        <button class="btn-ghost text-xs" onClick={() => void checkUpdates()}>
+          Check for updates
+        </button>
       </p>
     </div>
   );

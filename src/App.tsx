@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { Errored, Loading, type ParentProps } from "solid-js";
+import { Errored, Loading, Match, type ParentProps, Switch } from "solid-js";
 
 import {
   COLOR_SCHEMES,
@@ -7,6 +7,13 @@ import {
   colorScheme,
   setColorScheme,
 } from "./stores/color-scheme";
+import {
+  applyUpdate,
+  dismissOfflineReady,
+  dismissUpdate,
+  offlineReady,
+  updateReady,
+} from "./stores/sw-update";
 
 const SCHEME_ICONS: Record<ColorScheme, string> = { system: "🌗", light: "☀️", dark: "🌙" };
 
@@ -32,6 +39,38 @@ function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
         Try again
       </button>
     </div>
+  );
+}
+
+function ServiceWorkerToast() {
+  return (
+    <Switch>
+      <Match when={updateReady()}>
+        <div
+          role="status"
+          class="card fixed inset-x-0 bottom-4 z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
+        >
+          <p class="text-sm">A new version of Flashcut is available.</p>
+          <button class="btn-primary" onClick={() => void applyUpdate()}>
+            Reload
+          </button>
+          <button class="btn-ghost" onClick={dismissUpdate}>
+            Later
+          </button>
+        </div>
+      </Match>
+      <Match when={offlineReady()}>
+        <div
+          role="status"
+          class="card fixed inset-x-0 bottom-4 z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
+        >
+          <p class="text-sm">Flashcut is ready to work offline.</p>
+          <button class="btn-ghost" onClick={dismissOfflineReady}>
+            Dismiss
+          </button>
+        </div>
+      </Match>
+    </Switch>
   );
 }
 
@@ -66,6 +105,7 @@ export default function App(props: ParentProps) {
           </Loading>
         </Errored>
       </main>
+      <ServiceWorkerToast />
     </div>
   );
 }

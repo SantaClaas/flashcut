@@ -3,3 +3,14 @@
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
+
+# Service worker + manifest must never be served stale (CDN included), or
+# updates take an extra deploy cycle to reach users.
+/sw.js
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+# Hashed build assets are immutable; makes re-precaching after an update cheap.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

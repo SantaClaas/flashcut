@@ -1,6 +1,5 @@
 import { A } from "@solidjs/router";
 
-
 export default function NotFoundPage() {
   return (
     <div class="mt-16 space-y-4 text-center">
