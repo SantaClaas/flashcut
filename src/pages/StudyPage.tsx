@@ -94,36 +94,47 @@ export default function StudyPage() {
         fallback={<DoneScreen reviewedCount={reviewedCount()} onCheckForMore={checkForMore} />}
       >
         {(item) => (
-          <div class={`${card} space-y-4 p-6`}>
-            <Markdown source={item().front} />
-            <Show
-              when={revealed()}
-              fallback={
-                <button class={`${btnPrimary} w-full`} onClick={() => setRevealed(true)}>
-                  Show answer <span class="opacity-60">(space)</span>
-                </button>
-              }
-            >
-              <hr class="border-stone-200 dark:border-stone-800" />
-              <Markdown source={item().back} />
-              <div class="grid grid-cols-4 gap-2 pt-2">
-                <For each={GRADES}>
-                  {(grade, gradeIndex) => (
-                    <button
-                      class={gradeButtonClass(grade)}
-                      disabled={busy()}
-                      onClick={() => rate(grade)}
-                    >
-                      <span class="block">
-                        {GRADE_LABELS[grade]} <span class="opacity-60">({gradeIndex() + 1})</span>
-                      </span>
-                      <span class="block text-xs opacity-75">{intervals()?.[grade]}</span>
+          <>
+            <div class={`${card} mb-28 space-y-4 p-6`}>
+              <Markdown source={item().front} />
+              <Show when={revealed()}>
+                <hr class="border-stone-200 dark:border-stone-800" />
+                <Markdown source={item().back} />
+              </Show>
+            </div>
+
+            <div class="fixed inset-x-0 bottom-0 border-t border-stone-200 bg-stone-100/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
+              <div class="mx-auto max-w-3xl px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+                <Show
+                  when={revealed()}
+                  fallback={
+                    <button class={showAnswerButtonClass} onClick={() => setRevealed(true)}>
+                      Show answer <span class="opacity-60">(space)</span>
                     </button>
-                  )}
-                </For>
+                  }
+                >
+                  <div class="grid grid-cols-4 gap-2">
+                    <For each={GRADES}>
+                      {(grade, gradeIndex) => (
+                        <button
+                          class={gradeButtonClass}
+                          data-grade={grade}
+                          disabled={busy()}
+                          onClick={() => rate(grade)}
+                        >
+                          <span class="block">
+                            {GRADE_LABELS[grade]}{" "}
+                            <span class="opacity-60">({gradeIndex() + 1})</span>
+                          </span>
+                          <span class="block text-xs opacity-75">{intervals()?.[grade]}</span>
+                        </button>
+                      )}
+                    </For>
+                  </div>
+                </Show>
               </div>
-            </Show>
-          </div>
+            </div>
+          </>
         )}
       </Show>
     </div>
@@ -158,14 +169,12 @@ function DoneScreen(props: { reviewedCount: number; onCheckForMore: () => void }
   );
 }
 
-function gradeButtonClass(grade: Grade): string {
-  const base =
-    "cursor-pointer rounded-lg px-2 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50";
-  const colors: Record<Grade, string> = {
-    1: "bg-red-600 hover:bg-red-500",
-    2: "bg-amber-600 hover:bg-amber-500",
-    3: "bg-teal-600 hover:bg-teal-500",
-    4: "bg-sky-600 hover:bg-sky-500",
-  };
-  return `${base} ${colors[grade]}`;
-}
+const showAnswerButtonClass =
+  "w-full cursor-pointer rounded-lg bg-teal-600 px-3 py-4 text-sm font-medium text-white transition-colors hover:bg-teal-500";
+
+const gradeButtonClass =
+  "cursor-pointer rounded-lg px-2 py-3 text-sm font-medium text-white transition-colors disabled:opacity-50 " +
+  "data-[grade=1]:bg-red-600 data-[grade=1]:hover:bg-red-500 " +
+  "data-[grade=2]:bg-amber-600 data-[grade=2]:hover:bg-amber-500 " +
+  "data-[grade=3]:bg-teal-600 data-[grade=3]:hover:bg-teal-500 " +
+  "data-[grade=4]:bg-sky-600 data-[grade=4]:hover:bg-sky-500";

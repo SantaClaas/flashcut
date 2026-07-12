@@ -44,11 +44,9 @@ function BarChart(props: { days: DayBucket[]; class?: string }) {
       <For each={props.days}>
         {(day) => (
           <div
-            class="group relative flex-1 rounded-t bg-teal-600/80 transition-colors hover:bg-teal-500 dark:bg-teal-500/70"
-            style={{
-              height: `${(day.count / max()) * 100}%`,
-              "min-height": day.count ? "4px" : "1px",
-            }}
+            class="group relative min-h-[4px] flex-1 rounded-t bg-teal-600/80 transition-colors hover:bg-teal-500 data-empty:min-h-px dark:bg-teal-500/70"
+            data-empty={day.count === 0 ? "" : undefined}
+            style={{ height: `${(day.count / max()) * 100}%` }}
             title={`${day.date.toString()}: ${day.count}`}
           />
         )}

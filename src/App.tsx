@@ -16,11 +16,9 @@ function cycleColorScheme() {
   setColorScheme(COLOR_SCHEMES[(index + 1) % COLOR_SCHEMES.length] as ColorScheme);
 }
 
-function navLink(active?: boolean) {
-  return `rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-stone-200 dark:hover:bg-stone-800 ${
-    active ? "text-teal-600 dark:text-teal-400" : "text-stone-600 dark:text-stone-300"
-  }`;
-}
+// The router's <A> sets aria-current="page" on the active link.
+const navLink =
+  "rounded-lg px-3 py-1.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 aria-[current=page]:text-teal-600 dark:text-stone-300 dark:hover:bg-stone-800 dark:aria-[current=page]:text-teal-400";
 
 function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
   const message = () => {
@@ -50,10 +48,10 @@ export default function App(props: ParentProps) {
           <span aria-hidden="true">⚡️</span> Flashcut
         </A>
         <nav class="flex items-center gap-1">
-          <A href="/stats" class={navLink()}>
+          <A href="/stats" class={navLink}>
             Stats
           </A>
-          <A href="/settings" class={navLink()}>
+          <A href="/settings" class={navLink}>
             Settings
           </A>
           <button
