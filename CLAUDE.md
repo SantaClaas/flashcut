@@ -47,6 +47,6 @@ Always use **pnpm** (never npm/npx; use `pnpm dlx` instead of npx).
 
 **FSRS state** lives as columns on `cards` (mirroring the ts-fsrs `Card` type) and `review_logs` (mirroring `ReviewLog`). `State.New` (0) marks unstudied cards; the study queue serves due cards first, then new ones.
 
-**Styling:** Tailwind v4 (CSS-first config in `src/index.css`). Dark mode is a custom variant keyed on `data-color-scheme` on `<html>`, managed by `src/stores/theme.ts` and persisted to localStorage under `color-scheme`. Shared class strings live in `src/lib/ui.ts`, not CSS `@apply`.
+**Styling:** Tailwind v4 (CSS-first config in `src/index.css`). Components use `dark:` utilities; the `dark` custom variant resolves to the system preference by default, overridden when `data-color-scheme` is pinned on `<html>`. The same resolution drives the CSS `color-scheme` property (`:root { color-scheme: light dark }` + data-attribute overrides) so native UI matches. `src/stores/color-scheme.ts` manages the setting (`system`/`light`/`dark`, persisted to localStorage under `color-scheme`; an inline script in `index.html` applies a pinned scheme pre-render). Font size works the same way: `src/stores/font-size.ts` sets `data-font-size`, which selects a `--font-scale` applied to the root font-size. Shared class strings live in `src/lib/ui.ts`, not CSS `@apply`.
 
 **Markdown:** card fronts/backs are markdown, rendered by `src/components/Markdown.tsx` via marked + DOMPurify. Never render card content with raw `innerHTML` without sanitizing.

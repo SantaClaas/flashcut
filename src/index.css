@@ -1,13 +1,18 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Dark mode follows the data-color-scheme attribute set by stores/theme.ts */
-@custom-variant dark (&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *));
+/* Follow the system color scheme by default; stores/color-scheme.ts pins
+   light/dark via the data attribute (index.html applies a saved choice
+   pre-render). The color-scheme property themes native UI (scrollbars, form
+   controls); the dark variant below applies the same resolution to dark:
+   utilities.
 
-/* Font size follows the data-font-size attribute set by stores/font-size.ts.
+   Font size follows the data-font-size attribute set by stores/font-size.ts.
    Scaling the root font-size scales all rem-based (Tailwind) sizes; the %
    base keeps the browser's own font-size preference in effect. */
 :root {
+  color-scheme: light dark;
+
   --font-scale: 1;
 
   &[data-font-size="small"] {
@@ -18,6 +23,26 @@
   }
   &[data-font-size="x-large"] {
     --font-scale: 1.25;
+  }
+}
+
+[data-color-scheme="light"] {
+  color-scheme: light;
+}
+[data-color-scheme="dark"] {
+  color-scheme: dark;
+}
+
+/* dark: applies when the user pinned dark, or when the system prefers dark
+   and the user didn't pin light. */
+@custom-variant dark {
+  &:where([data-color-scheme="dark"], [data-color-scheme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-color-scheme="light"], [data-color-scheme="light"] *)) {
+      @slot;
+    }
   }
 }
 

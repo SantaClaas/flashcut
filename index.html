@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
+    <!-- Apply a pinned color scheme before first paint (the app bundle loads
+         too late to prevent a flash for users who override the system). -->
+    <script>
+      {
+        const scheme = localStorage.getItem("color-scheme");
+        if (scheme === "light" || scheme === "dark")
+          document.documentElement.dataset.colorScheme = scheme;
+      }
+    </script>
     <link rel="icon" href="data:," />
     <title>Flashcut</title>
   </head>

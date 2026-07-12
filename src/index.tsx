@@ -13,9 +13,8 @@ if (!("Temporal" in globalThis)) {
   Date.prototype.toTemporalInstant = toTemporalInstant;
 }
 
-// Apply the saved/preferred color scheme and font size as side effects of
-// module init.
-await import("./stores/theme");
+// Apply the saved color scheme and font size as side effects of module init.
+await import("./stores/color-scheme");
 await import("./stores/font-size");
 
 const { default: App } = await import("./App");

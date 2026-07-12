@@ -9,8 +9,19 @@ import { downloadBlob } from "../lib/download";
 import { STARTER_DECKS } from "../lib/starter-decks";
 import { isoNow } from "../lib/time";
 import { btnGhost, btnPrimary, card, input } from "../lib/ui";
+import {
+  COLOR_SCHEMES,
+  type ColorScheme,
+  colorScheme,
+  setColorScheme,
+} from "../stores/color-scheme";
 import { FONT_SIZES, type FontSize, fontSize, setFontSize } from "../stores/font-size";
-import { colorScheme, toggleColorScheme } from "../stores/theme";
+
+const COLOR_SCHEME_LABELS: Record<ColorScheme, string> = {
+  system: "System",
+  light: "Light",
+  dark: "Dark",
+};
 
 const FONT_SIZE_LABELS: Record<FontSize, string> = {
   small: "Small",
@@ -96,13 +107,23 @@ export default function SettingsPage() {
     <div class="space-y-6">
       <section class={card}>
         <h2 class="text-sm font-semibold">Appearance</h2>
-        <div class="mt-3 flex items-center justify-between">
-          <p class="text-sm text-stone-600 dark:text-stone-400">
-            Color scheme: <span class="font-medium">{colorScheme()}</span>
-          </p>
-          <button class={btnGhost} onClick={toggleColorScheme}>
-            Toggle
-          </button>
+        <div class="mt-3 flex items-center justify-between gap-4">
+          <label class="text-sm text-stone-600 dark:text-stone-400" for="color-scheme">
+            Color scheme
+          </label>
+          <select
+            id="color-scheme"
+            class={`${input} max-w-40`}
+            onInput={(event) => setColorScheme(event.currentTarget.value as ColorScheme)}
+          >
+            <For each={COLOR_SCHEMES}>
+              {(scheme) => (
+                <option value={scheme} selected={scheme === colorScheme()}>
+                  {COLOR_SCHEME_LABELS[scheme]}
+                </option>
+              )}
+            </For>
+          </select>
         </div>
         <div class="mt-3 flex items-center justify-between gap-4">
           <label class="text-sm text-stone-600 dark:text-stone-400" for="font-size">

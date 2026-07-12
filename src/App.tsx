@@ -1,8 +1,20 @@
 import { A } from "@solidjs/router";
-import { Errored, Loading, type ParentProps, Show } from "solid-js";
+import { Errored, Loading, type ParentProps } from "solid-js";
 
 import { btnGhost, btnPrimary } from "./lib/ui";
-import { colorScheme, toggleColorScheme } from "./stores/theme";
+import {
+  COLOR_SCHEMES,
+  type ColorScheme,
+  colorScheme,
+  setColorScheme,
+} from "./stores/color-scheme";
+
+const SCHEME_ICONS: Record<ColorScheme, string> = { system: "🌗", light: "☀️", dark: "🌙" };
+
+function cycleColorScheme() {
+  const index = COLOR_SCHEMES.indexOf(colorScheme());
+  setColorScheme(COLOR_SCHEMES[(index + 1) % COLOR_SCHEMES.length] as ColorScheme);
+}
 
 function navLink(active?: boolean) {
   return `rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-stone-200 dark:hover:bg-stone-800 ${
@@ -46,13 +58,11 @@ export default function App(props: ParentProps) {
           </A>
           <button
             class={btnGhost}
-            onClick={toggleColorScheme}
-            title="Toggle color scheme"
-            aria-label="Toggle color scheme"
+            onClick={cycleColorScheme}
+            title={`Color scheme: ${colorScheme()}`}
+            aria-label={`Color scheme: ${colorScheme()}. Activate to switch.`}
           >
-            <Show when={colorScheme() === "dark"} fallback={<span aria-hidden="true">🌙</span>}>
-              <span aria-hidden="true">☀️</span>
-            </Show>
+            <span aria-hidden="true">{SCHEME_ICONS[colorScheme()]}</span>
           </button>
         </nav>
       </header>

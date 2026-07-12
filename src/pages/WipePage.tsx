@@ -15,6 +15,7 @@ export default function WipePage() {
     setBusy(true);
     try {
       localStorage.removeItem("color-scheme");
+      localStorage.removeItem("font-size");
       // Deletes the database files and reloads every open tab.
       await dbService.wipe();
     } finally {
