@@ -103,7 +103,7 @@ export default function StudyPage() {
             </div>
 
             <div class="fixed inset-x-0 bottom-0 border-t border-stone-200 bg-stone-100/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
-              <div class="mx-auto max-w-3xl px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+              <div class="mx-auto max-w-3xl pt-3 pr-[max(1rem,env(safe-area-inset-right))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]">
                 <Show
                   when={revealed()}
                   fallback={

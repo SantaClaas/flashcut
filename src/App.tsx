@@ -48,7 +48,7 @@ function ServiceWorkerToast() {
       <Match when={updateReady()}>
         <div
           role="status"
-          class="card fixed inset-x-0 bottom-4 z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
+          class="card fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
         >
           <p class="text-sm">A new version of Flashcut is available.</p>
           <button class="btn-primary" onClick={() => void applyUpdate()}>
@@ -62,7 +62,7 @@ function ServiceWorkerToast() {
       <Match when={offlineReady()}>
         <div
           role="status"
-          class="card fixed inset-x-0 bottom-4 z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
+          class="card fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
         >
           <p class="text-sm">Flashcut is ready to work offline.</p>
           <button class="btn-ghost" onClick={dismissOfflineReady}>
