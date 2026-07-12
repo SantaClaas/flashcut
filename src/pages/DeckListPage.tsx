@@ -1,6 +1,7 @@
 import { A } from "@solidjs/router";
 import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { getDb } from "../db/client";
 import { createDeck, deleteDeck, listDecks } from "../db/decks";
 import { broadcastMessage, useBroadcast } from "../lib/broadcast";
@@ -14,6 +15,7 @@ async function fetchDecks() {
 export default function DeckListPage() {
   const decks = createMemo(() => fetchDecks());
   const [name, setName] = createSignal("");
+  const [deckToDelete, setDeckToDelete] = createSignal<{ id: number; name: string }>();
 
   // Deck names, card counts, and due counts all show here — any change matters.
   useBroadcast(() => refresh(decks));
@@ -29,10 +31,11 @@ export default function DeckListPage() {
     broadcastMessage({ type: "Decks changed" });
   }
 
-  async function removeDeck(id: number, deckName: string) {
-    if (!confirm(`Delete deck “${deckName}” and all of its cards?`)) return;
+  async function removeDeck() {
+    const deck = deckToDelete();
+    if (!deck) return;
     const db = await getDb();
-    await deleteDeck(db, id);
+    await deleteDeck(db, deck.id);
     refresh(decks);
     broadcastMessage({ type: "Decks changed" });
   }
@@ -88,7 +91,12 @@ export default function DeckListPage() {
                   <A href={`/decks/${deck.id}`} class="btn-ghost">
                     Browse
                   </A>
-                  <button class="btn-danger" onClick={() => removeDeck(deck.id, deck.name)}>
+                  <button
+                    class="btn-danger"
+                    commandfor="confirm-delete-deck"
+                    command="show-modal"
+                    onClick={() => setDeckToDelete({ id: deck.id, name: deck.name })}
+                  >
                     Delete
                   </button>
                 </div>
@@ -97,6 +105,15 @@ export default function DeckListPage() {
           </For>
         </ul>
       </Show>
+
+      <ConfirmDialog
+        id="confirm-delete-deck"
+        title="Delete deck"
+        confirmLabel="Delete"
+        onConfirm={() => void removeDeck()}
+      >
+        Delete deck “{deckToDelete()?.name}” and all of its cards?
+      </ConfirmDialog>
     </div>
   );
 }

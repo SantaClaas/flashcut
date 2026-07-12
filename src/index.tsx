@@ -13,6 +13,13 @@ if (!("Temporal" in globalThis)) {
   Date.prototype.toTemporalInstant = toTemporalInstant;
 }
 
+// Same treatment for the Invoker Commands API (button command/commandfor,
+// used for dialogs and popovers): only fetched when native support is missing.
+if (!("commandForElement" in HTMLButtonElement.prototype)) {
+  console.debug("Invoker commands not found, polyfilling...");
+  await import("invokers-polyfill");
+}
+
 // Apply the saved color scheme and font size as side effects of module init.
 await import("./stores/color-scheme");
 await import("./stores/font-size");

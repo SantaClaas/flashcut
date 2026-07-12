@@ -1,5 +1,6 @@
 import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { getDb } from "../db/client";
 import { listDecks } from "../db/decks";
 import { broadcastMessage, useBroadcast } from "../lib/broadcast";
@@ -101,17 +102,17 @@ export default function SettingsPage() {
     }
   }
 
+  // The replace-all-data warning lives in the ConfirmDialog below; by the
+  // time a file is picked the user has already confirmed.
   async function importDb(file: File) {
-    const confirmed = confirm(
-      "Importing a database file REPLACES all current decks, cards, and review history. Continue?",
-    );
-    if (!confirmed) return;
     try {
       await importDatabaseFile(file);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : String(error));
     }
   }
+
+  let dbFileInput: HTMLInputElement | undefined;
 
   return (
     <div class="space-y-6">
@@ -221,8 +222,31 @@ export default function SettingsPage() {
           <button class="btn-primary" onClick={() => void exportDatabaseFile()}>
             Export database
           </button>
-          <FilePicker label="Import database…" accept=".db,.sqlite,.sqlite3" onFile={importDb} />
+          <input
+            ref={(el) => {
+              dbFileInput = el;
+            }}
+            type="file"
+            accept=".db,.sqlite,.sqlite3"
+            class="hidden"
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              if (file) void importDb(file);
+              event.currentTarget.value = "";
+            }}
+          />
+          <button type="button" class="btn-ghost" commandfor="confirm-import-db" command="show-modal">
+            Import database…
+          </button>
         </div>
+        <ConfirmDialog
+          id="confirm-import-db"
+          title="Replace all data?"
+          confirmLabel="Choose file…"
+          onConfirm={() => dbFileInput?.click()}
+        >
+          Importing a database file replaces all current decks, cards, and review history.
+        </ConfirmDialog>
       </section>
 
       <Show when={status()}>

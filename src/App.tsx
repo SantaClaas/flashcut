@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { Errored, Loading, Match, type ParentProps, Switch } from "solid-js";
+import { Errored, Loading, Match, onSettled, type ParentProps, Switch } from "solid-js";
 
 import {
   COLOR_SCHEMES,
@@ -42,33 +42,64 @@ function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
   );
 }
 
+/**
+ * Toast rendered as a manual popover: it sits in the top layer (above any
+ * open modal dialog) and never light-dismisses. Popovers must still be shown
+ * explicitly, and toasts appear on state changes rather than button presses,
+ * so opening is programmatic; dismiss buttons close it declaratively with
+ * commandfor={id} command="hide-popover".
+ */
+function Toast(props: ParentProps<{ id: string }>) {
+  let el: HTMLDivElement | undefined;
+  onSettled(() => {
+    if (el && "showPopover" in el) el.showPopover();
+  });
+  return (
+    <div
+      ref={(node) => {
+        el = node;
+      }}
+      id={props.id}
+      popover="manual"
+      role="status"
+      class="card fixed inset-x-0 top-auto bottom-[calc(1rem+env(safe-area-inset-bottom))] mx-auto w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg [&:popover-open]:flex"
+    >
+      {props.children}
+    </div>
+  );
+}
+
 function ServiceWorkerToast() {
   return (
     <Switch>
       <Match when={updateReady()}>
-        <div
-          role="status"
-          class="card fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
-        >
+        <Toast id="update-toast">
           <p class="text-sm">A new version of Flashcut is available.</p>
           <button class="btn-primary" onClick={() => void applyUpdate()}>
             Reload
           </button>
-          <button class="btn-ghost" onClick={dismissUpdate}>
+          <button
+            class="btn-ghost"
+            commandfor="update-toast"
+            command="hide-popover"
+            onClick={dismissUpdate}
+          >
             Later
           </button>
-        </div>
+        </Toast>
       </Match>
       <Match when={offlineReady()}>
-        <div
-          role="status"
-          class="card fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-3 p-3 shadow-lg"
-        >
+        <Toast id="offline-toast">
           <p class="text-sm">Flashcut is ready to work offline.</p>
-          <button class="btn-ghost" onClick={dismissOfflineReady}>
+          <button
+            class="btn-ghost"
+            commandfor="offline-toast"
+            command="hide-popover"
+            onClick={dismissOfflineReady}
+          >
             Dismiss
           </button>
-        </div>
+        </Toast>
       </Match>
     </Switch>
   );

@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { dbService } from "../db/client";
 
 /** Hidden maintenance page — reachable only by typing /wipe, never linked. */
@@ -7,10 +8,6 @@ export default function WipePage() {
   const [busy, setBusy] = createSignal(false);
 
   async function wipe() {
-    const confirmed = confirm(
-      "Delete ALL decks, cards, and review history stored in this browser? This cannot be undone.",
-    );
-    if (!confirmed) return;
     setBusy(true);
     try {
       localStorage.removeItem("color-scheme");
@@ -29,9 +26,22 @@ export default function WipePage() {
         Permanently deletes the local database — every deck, card, and review — from this browser
         and reloads all open tabs. Consider exporting a backup from Settings first.
       </p>
-      <button class="btn-danger w-full" disabled={busy()} onClick={() => void wipe()}>
+      <button
+        class="btn-danger w-full"
+        disabled={busy()}
+        commandfor="confirm-wipe"
+        command="show-modal"
+      >
         {busy() ? "Wiping…" : "Wipe all data"}
       </button>
+      <ConfirmDialog
+        id="confirm-wipe"
+        title="Wipe all data?"
+        confirmLabel="Wipe everything"
+        onConfirm={() => void wipe()}
+      >
+        Delete ALL decks, cards, and review history stored in this browser? This cannot be undone.
+      </ConfirmDialog>
     </div>
   );
 }

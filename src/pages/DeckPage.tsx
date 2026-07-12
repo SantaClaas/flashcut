@@ -1,6 +1,7 @@
 import { A, useParams } from "@solidjs/router";
 import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
+import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Markdown } from "../components/Markdown";
 import { createCard, deleteCard, listCards, updateCardContent } from "../db/cards";
 import { getDb } from "../db/client";
@@ -34,6 +35,7 @@ export default function DeckPage() {
   const [back, setBack] = createSignal("");
   const [editingId, setEditingId] = createSignal<number | null>(null);
   const [showPreview, setShowPreview] = createSignal(false);
+  const [cardToDelete, setCardToDelete] = createSignal<number>();
 
   function resetForm() {
     setFront("");
@@ -63,8 +65,9 @@ export default function DeckPage() {
     broadcastMessage({ type: "Cards changed", deckId: deckId() });
   }
 
-  async function removeCard(id: number) {
-    if (!confirm("Delete this card?")) return;
+  async function removeCard() {
+    const id = cardToDelete();
+    if (id == null) return;
     const db = await getDb();
     await deleteCard(db, id);
     if (editingId() === id) resetForm();
@@ -160,7 +163,12 @@ export default function DeckPage() {
                     >
                       Edit
                     </button>
-                    <button class="btn-danger" onClick={() => removeCard(item.id)}>
+                    <button
+                      class="btn-danger"
+                      commandfor="confirm-delete-card"
+                      command="show-modal"
+                      onClick={() => setCardToDelete(item.id)}
+                    >
                       Delete
                     </button>
                   </div>
@@ -169,6 +177,15 @@ export default function DeckPage() {
             </For>
           </ul>
         </Show>
+
+        <ConfirmDialog
+          id="confirm-delete-card"
+          title="Delete card"
+          confirmLabel="Delete"
+          onConfirm={() => void removeCard()}
+        >
+          Delete this card?
+        </ConfirmDialog>
       </div>
     </Show>
   );
