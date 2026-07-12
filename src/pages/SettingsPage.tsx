@@ -8,7 +8,6 @@ import { exportDeckJson, importDeckJson } from "../lib/deck-json";
 import { downloadBlob } from "../lib/download";
 import { STARTER_DECKS } from "../lib/starter-decks";
 import { isoNow } from "../lib/time";
-import { btnGhost, btnPrimary, card, input } from "../lib/ui";
 import {
   COLOR_SCHEMES,
   type ColorScheme,
@@ -105,7 +104,7 @@ export default function SettingsPage() {
 
   return (
     <div class="space-y-6">
-      <section class={card}>
+      <section class="card">
         <h2 class="text-sm font-semibold">Appearance</h2>
         <div class="mt-3 flex items-center justify-between gap-4">
           <label class="text-sm text-stone-600 dark:text-stone-400" for="color-scheme">
@@ -113,7 +112,7 @@ export default function SettingsPage() {
           </label>
           <select
             id="color-scheme"
-            class={`${input} max-w-40`}
+            class="input max-w-40"
             onInput={(event) => setColorScheme(event.currentTarget.value as ColorScheme)}
           >
             <For each={COLOR_SCHEMES}>
@@ -131,7 +130,7 @@ export default function SettingsPage() {
           </label>
           <select
             id="font-size"
-            class={`${input} max-w-40`}
+            class="input max-w-40"
             onInput={(event) => setFontSize(event.currentTarget.value as FontSize)}
           >
             <For each={FONT_SIZES}>
@@ -145,7 +144,7 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section class={`${card} space-y-3`}>
+      <section class="card space-y-3">
         <h2 class="text-sm font-semibold">Decks (JSON)</h2>
         <p class="text-sm text-stone-600 dark:text-stone-400">
           Share or back up a single deck, including its scheduling state. Review history is not
@@ -154,12 +153,12 @@ export default function SettingsPage() {
         <Show when={decks().length}>
           <div class="flex gap-2">
             <select
-              class={input}
+              class="input"
               onInput={(event) => setSelectedDeckId(Number(event.currentTarget.value))}
             >
               <For each={decks()}>{(deck) => <option value={deck.id}>{deck.name}</option>}</For>
             </select>
-            <button class={btnPrimary} onClick={exportDeck}>
+            <button class="btn-primary" onClick={exportDeck}>
               Export
             </button>
           </div>
@@ -167,7 +166,7 @@ export default function SettingsPage() {
         <FilePicker label="Import deck from JSON…" accept=".json" onFile={importDeck} />
       </section>
 
-      <section class={`${card} space-y-3`}>
+      <section class="card space-y-3">
         <h2 class="text-sm font-semibold">Deck library</h2>
         <p class="text-sm text-stone-600 dark:text-stone-400">
           Ready-made decks bundled with Flashcut. Add one to your decks or download it as a file to
@@ -186,12 +185,12 @@ export default function SettingsPage() {
                 </div>
                 <div class="flex shrink-0 gap-1">
                   <button
-                    class={btnPrimary}
+                    class="btn-primary"
                     onClick={() => void addStarterDeck(starter.url, starter.name)}
                   >
                     Add
                   </button>
-                  <a class={btnGhost} href={starter.url} download>
+                  <a class="btn-ghost" href={starter.url} download>
                     Download
                   </a>
                 </div>
@@ -201,14 +200,14 @@ export default function SettingsPage() {
         </ul>
       </section>
 
-      <section class={`${card} space-y-3`}>
+      <section class="card space-y-3">
         <h2 class="text-sm font-semibold">Database (SQLite)</h2>
         <p class="text-sm text-stone-600 dark:text-stone-400">
           Everything lives in a single SQLite file in your browser's origin-private file system.
           Export it as a full backup — importing one replaces all current data.
         </p>
         <div class="flex flex-wrap gap-2">
-          <button class={btnPrimary} onClick={() => void exportDatabaseFile()}>
+          <button class="btn-primary" onClick={() => void exportDatabaseFile()}>
             Export database
           </button>
           <FilePicker label="Import database…" accept=".db,.sqlite,.sqlite3" onFile={importDb} />
@@ -244,7 +243,7 @@ function FilePicker(props: { label: string; accept: string; onFile: (file: File)
           event.currentTarget.value = "";
         }}
       />
-      <button type="button" class={btnGhost} onClick={() => fileInput?.click()}>
+      <button type="button" class="btn-ghost" onClick={() => fileInput?.click()}>
         {props.label}
       </button>
     </>

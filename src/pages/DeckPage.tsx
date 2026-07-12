@@ -7,7 +7,6 @@ import { getDb } from "../db/client";
 import { getDeck } from "../db/decks";
 import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
-import { btnDanger, btnGhost, btnPrimary, card, input } from "../lib/ui";
 import { newCardFsrs } from "../srs/scheduler";
 
 async function fetchDeck(id: number) {
@@ -85,12 +84,12 @@ export default function DeckPage() {
       <div class="space-y-6">
         <div class="flex items-center justify-between gap-4">
           <h1 class="truncate text-lg font-semibold">{deck()!.name}</h1>
-          <A href={`/decks/${deckId()}/study`} class={btnPrimary}>
+          <A href={`/decks/${deckId()}/study`} class="btn-primary">
             Study
           </A>
         </div>
 
-        <form onSubmit={submit} class={`${card} space-y-3`}>
+        <form onSubmit={submit} class="card space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-semibold">{editingId() == null ? "Add card" : "Edit card"}</h2>
             <label class="flex items-center gap-1.5 text-xs text-stone-500">
@@ -105,7 +104,7 @@ export default function DeckPage() {
           <div class="grid gap-3 sm:grid-cols-2">
             <div class="space-y-2">
               <textarea
-                class={`${input} min-h-24 font-mono`}
+                class="input min-h-24 font-mono"
                 placeholder="Front (markdown)"
                 value={front()}
                 onInput={(event) => setFront(event.currentTarget.value)}
@@ -118,7 +117,7 @@ export default function DeckPage() {
             </div>
             <div class="space-y-2">
               <textarea
-                class={`${input} min-h-24 font-mono`}
+                class="input min-h-24 font-mono"
                 placeholder="Back (markdown)"
                 value={back()}
                 onInput={(event) => setBack(event.currentTarget.value)}
@@ -131,11 +130,11 @@ export default function DeckPage() {
             </div>
           </div>
           <div class="flex gap-2">
-            <button type="submit" class={btnPrimary}>
+            <button type="submit" class="btn-primary">
               {editingId() == null ? "Add card" : "Save changes"}
             </button>
             <Show when={editingId() != null}>
-              <button type="button" class={btnGhost} onClick={resetForm}>
+              <button type="button" class="btn-ghost" onClick={resetForm}>
                 Cancel
               </button>
             </Show>
@@ -149,19 +148,19 @@ export default function DeckPage() {
           <ul class="space-y-2">
             <For each={cards()}>
               {(item) => (
-                <li class={`${card} flex items-start justify-between gap-4`}>
+                <li class="card flex items-start justify-between gap-4">
                   <div class="grid min-w-0 flex-1 gap-2 sm:grid-cols-2">
                     <Markdown source={item.front} />
                     <Markdown source={item.back} class="text-stone-600 dark:text-stone-400" />
                   </div>
                   <div class="flex shrink-0 gap-1">
                     <button
-                      class={btnGhost}
+                      class="btn-ghost"
                       onClick={() => startEditing(item.id, item.front, item.back)}
                     >
                       Edit
                     </button>
-                    <button class={btnDanger} onClick={() => removeCard(item.id)}>
+                    <button class="btn-danger" onClick={() => removeCard(item.id)}>
                       Delete
                     </button>
                   </div>

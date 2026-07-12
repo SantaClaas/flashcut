@@ -1,7 +1,6 @@
 import { createSignal } from "solid-js";
 
 import { dbService } from "../db/client";
-import { btnDanger, card } from "../lib/ui";
 
 /** Hidden maintenance page — reachable only by typing /wipe, never linked. */
 export default function WipePage() {
@@ -24,13 +23,13 @@ export default function WipePage() {
   }
 
   return (
-    <div class={`${card} mx-auto mt-12 max-w-md space-y-4 border-red-300 dark:border-red-900`}>
+    <div class="card mx-auto mt-12 max-w-md space-y-4 border-red-300 dark:border-red-900">
       <h1 class="text-lg font-semibold text-red-600 dark:text-red-400">Wipe all data</h1>
       <p class="text-sm text-stone-600 dark:text-stone-400">
         Permanently deletes the local database — every deck, card, and review — from this browser
         and reloads all open tabs. Consider exporting a backup from Settings first.
       </p>
-      <button class={`${btnDanger} w-full`} disabled={busy()} onClick={() => void wipe()}>
+      <button class="btn-danger w-full" disabled={busy()} onClick={() => void wipe()}>
         {busy() ? "Wiping…" : "Wipe all data"}
       </button>
     </div>

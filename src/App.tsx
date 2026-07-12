@@ -1,7 +1,6 @@
 import { A } from "@solidjs/router";
 import { Errored, Loading, type ParentProps } from "solid-js";
 
-import { btnGhost, btnPrimary } from "./lib/ui";
 import {
   COLOR_SCHEMES,
   type ColorScheme,
@@ -16,10 +15,6 @@ function cycleColorScheme() {
   setColorScheme(COLOR_SCHEMES[(index + 1) % COLOR_SCHEMES.length] as ColorScheme);
 }
 
-// The router's <A> sets aria-current="page" on the active link.
-const navLink =
-  "rounded-lg px-3 py-1.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 aria-[current=page]:text-teal-600 dark:text-stone-300 dark:hover:bg-stone-800 dark:aria-[current=page]:text-teal-400";
-
 function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
   const message = () => {
     const error = props.error();
@@ -33,7 +28,7 @@ function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
         the problem persists, export your data from Settings and file an issue.
       </p>
       <p class="mt-3 font-mono text-xs break-all text-stone-500">{message()}</p>
-      <button class={`${btnPrimary} mt-6`} onClick={() => props.reset()}>
+      <button class="btn-primary mt-6" onClick={() => props.reset()}>
         Try again
       </button>
     </div>
@@ -48,14 +43,14 @@ export default function App(props: ParentProps) {
           <span aria-hidden="true">⚡️</span> Flashcut
         </A>
         <nav class="flex items-center gap-1">
-          <A href="/stats" class={navLink}>
+          <A href="/stats" class="nav-link">
             Stats
           </A>
-          <A href="/settings" class={navLink}>
+          <A href="/settings" class="nav-link">
             Settings
           </A>
           <button
-            class={btnGhost}
+            class="btn-ghost"
             onClick={cycleColorScheme}
             title={`Color scheme: ${colorScheme()}`}
             aria-label={`Color scheme: ${colorScheme()}. Activate to switch.`}

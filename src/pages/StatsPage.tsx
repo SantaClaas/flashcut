@@ -4,7 +4,6 @@ import { getDb } from "../db/client";
 import { reviewTimesSince, scheduledDueTimes, totalReviewCount } from "../db/reviews";
 import { useBroadcast } from "../lib/broadcast";
 import { toIso, toLocalDay } from "../lib/time";
-import { card } from "../lib/ui";
 
 const HISTORY_DAYS = 30;
 const FORECAST_DAYS = 14;
@@ -105,12 +104,12 @@ export default function StatsPage() {
         <StatTile label="Total reviews" value={stats().total} />
       </div>
 
-      <section class={card}>
+      <section class="card">
         <h2 class="mb-4 text-sm font-semibold">Reviews — last {HISTORY_DAYS} days</h2>
         <BarChart days={history()} />
       </section>
 
-      <section class={card}>
+      <section class="card">
         <h2 class="mb-4 text-sm font-semibold">Due forecast — next {FORECAST_DAYS} days</h2>
         <BarChart days={forecast()} />
       </section>
@@ -120,7 +119,7 @@ export default function StatsPage() {
 
 function StatTile(props: { label: string; value: number }) {
   return (
-    <div class={`${card} text-center`}>
+    <div class="card text-center">
       <p class="text-2xl font-bold tabular-nums">{props.value}</p>
       <p class="mt-1 text-xs text-stone-500">{props.label}</p>
     </div>

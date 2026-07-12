@@ -9,7 +9,6 @@ import { getDeck } from "../db/decks";
 import { recordReview } from "../db/reviews";
 import { broadcastMessage } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
-import { btnGhost, btnPrimary, card } from "../lib/ui";
 import { GRADE_LABELS, GRADES, previewIntervals, rateCard } from "../srs/scheduler";
 
 const NEW_CARDS_PER_SESSION = 20;
@@ -95,7 +94,7 @@ export default function StudyPage() {
       >
         {(item) => (
           <>
-            <div class={`${card} mb-28 space-y-4 p-6`}>
+            <div class="card mb-28 space-y-4 p-6">
               <Markdown source={item().front} />
               <Show when={revealed()}>
                 <hr class="border-stone-200 dark:border-stone-800" />
@@ -108,7 +107,7 @@ export default function StudyPage() {
                 <Show
                   when={revealed()}
                   fallback={
-                    <button class={showAnswerButtonClass} onClick={() => setRevealed(true)}>
+                    <button class="btn-primary w-full py-4" onClick={() => setRevealed(true)}>
                       Show answer <span class="opacity-60">(space)</span>
                     </button>
                   }
@@ -117,7 +116,7 @@ export default function StudyPage() {
                     <For each={GRADES}>
                       {(grade, gradeIndex) => (
                         <button
-                          class={gradeButtonClass}
+                          class="grade-btn"
                           data-grade={grade}
                           disabled={busy()}
                           onClick={() => rate(grade)}
@@ -158,23 +157,13 @@ function DoneScreen(props: { reviewedCount: number; onCheckForMore: () => void }
         session. Cards in learning may become due again in a few minutes.
       </p>
       <div class="flex justify-center gap-2">
-        <button class={btnGhost} onClick={() => props.onCheckForMore()}>
+        <button class="btn-ghost" onClick={() => props.onCheckForMore()}>
           Check for more
         </button>
-        <A href="/" class={btnPrimary}>
+        <A href="/" class="btn-primary">
           Back to decks
         </A>
       </div>
     </div>
   );
 }
-
-const showAnswerButtonClass =
-  "w-full cursor-pointer rounded-lg bg-teal-600 px-3 py-4 text-sm font-medium text-white transition-colors hover:bg-teal-500";
-
-const gradeButtonClass =
-  "cursor-pointer rounded-lg px-2 py-3 text-sm font-medium text-white transition-colors disabled:opacity-50 " +
-  "data-[grade=1]:bg-red-600 data-[grade=1]:hover:bg-red-500 " +
-  "data-[grade=2]:bg-amber-600 data-[grade=2]:hover:bg-amber-500 " +
-  "data-[grade=3]:bg-teal-600 data-[grade=3]:hover:bg-teal-500 " +
-  "data-[grade=4]:bg-sky-600 data-[grade=4]:hover:bg-sky-500";

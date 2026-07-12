@@ -5,7 +5,6 @@ import { getDb } from "../db/client";
 import { createDeck, deleteDeck, listDecks } from "../db/decks";
 import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
-import { btnDanger, btnGhost, btnPrimary, card, input } from "../lib/ui";
 
 async function fetchDecks() {
   const db = await getDb();
@@ -42,12 +41,12 @@ export default function DeckListPage() {
     <div class="space-y-6">
       <form onSubmit={addDeck} class="flex gap-2">
         <input
-          class={input}
+          class="input"
           placeholder="New deck name…"
           value={name()}
           onInput={(event) => setName(event.currentTarget.value)}
         />
-        <button type="submit" class={btnPrimary}>
+        <button type="submit" class="btn-primary">
           Create
         </button>
       </form>
@@ -63,7 +62,7 @@ export default function DeckListPage() {
         <ul class="space-y-3">
           <For each={decks()}>
             {(deck) => (
-              <li class={`${card} flex items-center justify-between gap-4`}>
+              <li class="card flex items-center justify-between gap-4">
                 <div class="min-w-0">
                   <A href={`/decks/${deck.id}`} class="font-semibold hover:text-teal-600">
                     {deck.name}
@@ -83,13 +82,13 @@ export default function DeckListPage() {
                   </p>
                 </div>
                 <div class="flex shrink-0 items-center gap-1">
-                  <A href={`/decks/${deck.id}/study`} class={btnPrimary}>
+                  <A href={`/decks/${deck.id}/study`} class="btn-primary">
                     Study
                   </A>
-                  <A href={`/decks/${deck.id}`} class={btnGhost}>
+                  <A href={`/decks/${deck.id}`} class="btn-ghost">
                     Browse
                   </A>
-                  <button class={btnDanger} onClick={() => removeDeck(deck.id, deck.name)}>
+                  <button class="btn-danger" onClick={() => removeDeck(deck.id, deck.name)}>
                     Delete
                   </button>
                 </div>
