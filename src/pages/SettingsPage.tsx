@@ -9,7 +9,15 @@ import { downloadBlob } from "../lib/download";
 import { STARTER_DECKS } from "../lib/starter-decks";
 import { isoNow } from "../lib/time";
 import { btnGhost, btnPrimary, card, input } from "../lib/ui";
+import { FONT_SIZES, type FontSize, fontSize, setFontSize } from "../stores/font-size";
 import { colorScheme, toggleColorScheme } from "../stores/theme";
+
+const FONT_SIZE_LABELS: Record<FontSize, string> = {
+  small: "Small",
+  medium: "Medium",
+  large: "Large",
+  "x-large": "Extra large",
+};
 
 async function fetchDecks() {
   const db = await getDb();
@@ -95,6 +103,24 @@ export default function SettingsPage() {
           <button class={btnGhost} onClick={toggleColorScheme}>
             Toggle
           </button>
+        </div>
+        <div class="mt-3 flex items-center justify-between gap-4">
+          <label class="text-sm text-stone-600 dark:text-stone-400" for="font-size">
+            Font size
+          </label>
+          <select
+            id="font-size"
+            class={`${input} max-w-40`}
+            onInput={(event) => setFontSize(event.currentTarget.value as FontSize)}
+          >
+            <For each={FONT_SIZES}>
+              {(size) => (
+                <option value={size} selected={size === fontSize()}>
+                  {FONT_SIZE_LABELS[size]}
+                </option>
+              )}
+            </For>
+          </select>
         </div>
       </section>
 

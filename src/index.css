@@ -4,6 +4,27 @@
 /* Dark mode follows the data-color-scheme attribute set by stores/theme.ts */
 @custom-variant dark (&:where([data-color-scheme="dark"], [data-color-scheme="dark"] *));
 
+/* Font size follows the data-font-size attribute set by stores/font-size.ts.
+   Scaling the root font-size scales all rem-based (Tailwind) sizes; the %
+   base keeps the browser's own font-size preference in effect. */
+:root {
+  --font-scale: 1;
+
+  &[data-font-size="small"] {
+    --font-scale: 0.875;
+  }
+  &[data-font-size="large"] {
+    --font-scale: 1.125;
+  }
+  &[data-font-size="x-large"] {
+    --font-scale: 1.25;
+  }
+}
+
+html {
+  font-size: calc(100% * var(--font-scale));
+}
+
 body {
   @apply bg-stone-100 text-stone-900 antialiased dark:bg-stone-950 dark:text-stone-100;
 }
