@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { exportDeckJson, importDeckJson } from "../lib/deck-json";
 import { isoNow } from "../lib/time";
 import { newCardFsrs, rateCard } from "../srs/scheduler";
-import { createCard, getCard, listCards, studyQueue } from "./cards";
+import { createCard, deckStateCounts, getCard, listCards, studyQueue } from "./cards";
 import type { DbConnection } from "./connection";
 import { createDeck, deleteDeck, getDeck, listDecks } from "./decks";
 import { migrate } from "./migrations";
@@ -83,6 +83,26 @@ describe("studyQueue", () => {
     const queue = await studyQueue(db, deckId, later, 2);
     expect(queue.map((c) => c.id)).toEqual([dueId, newIds[0], newIds[1]]);
     expect(queue[0]!.state).not.toBe(State.New);
+  });
+});
+
+describe("deckStateCounts", () => {
+  it("counts cards per FSRS state, scoped to the deck", async () => {
+    const db = await openTestDb();
+    const { deckId, cardId } = await seedDeckWithCard(db);
+    await createCard(db, deckId, "adiós", "goodbye", nowIso, newCardFsrs(now));
+    const otherDeckId = await createDeck(db, "Other", "", nowIso);
+    await createCard(db, otherDeckId, "elsewhere", "x", nowIso, newCardFsrs(now));
+
+    const { fsrs, log } = rateCard((await getCard(db, cardId))!, Rating.Good, now);
+    await recordReview(db, cardId, fsrs, log);
+
+    expect(await deckStateCounts(db, deckId)).toEqual({
+      [State.New]: 1,
+      [State.Learning]: 1,
+      [State.Review]: 0,
+      [State.Relearning]: 0,
+    });
   });
 });
 

@@ -235,7 +235,12 @@ export default function SettingsPage() {
               event.currentTarget.value = "";
             }}
           />
-          <button type="button" class="btn-ghost" commandfor="confirm-import-db" command="show-modal">
+          <button
+            type="button"
+            class="btn-ghost"
+            commandfor="confirm-import-db"
+            command="show-modal"
+          >
             Import database…
           </button>
         </div>

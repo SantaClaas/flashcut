@@ -126,6 +126,25 @@ export async function listCards(db: DbConnection, deckId: number): Promise<CardR
   return rows.map(toCardRecord);
 }
 
+/** Number of cards in each FSRS state within a deck. */
+export async function deckStateCounts(
+  db: DbConnection,
+  deckId: number,
+): Promise<Record<State, number>> {
+  const rows = await db.all(
+    "SELECT state, COUNT(*) AS count FROM cards WHERE deck_id = ? GROUP BY state",
+    deckId,
+  );
+  const counts: Record<State, number> = {
+    [State.New]: 0,
+    [State.Learning]: 0,
+    [State.Review]: 0,
+    [State.Relearning]: 0,
+  };
+  for (const row of rows) counts[Number(row["state"]) as State] = Number(row["count"]);
+  return counts;
+}
+
 /**
  * The study queue: cards due for review (oldest due first), followed by up to `newLimit`
  * never-studied cards.

@@ -1,9 +1,8 @@
 import type { ParentProps } from "solid-js";
 
 /**
- * Modal confirmation dialog, controlled declaratively via the Invoker
- * Commands API: open it from any button with
- * `commandfor={id} command="show-modal"`. Cancel and confirm close it with
+ * Modal confirmation dialog, controlled declaratively via the Invoker Commands API: open it from
+ * any button with `commandfor={id} command="show-modal"`. Cancel and confirm close it with
  * `command="close"`; the confirm button additionally runs `onConfirm`.
  */
 export function ConfirmDialog(
@@ -41,9 +40,9 @@ export function ConfirmDialog(
 }
 
 /**
- * closedby="any" closes the dialog on backdrop clicks natively, but Safari
- * doesn't support it yet — emulate it there. A backdrop click dispatches on
- * the dialog element itself with coordinates outside its content box.
+ * Closedby="any" closes the dialog on backdrop clicks natively, but Safari doesn't support it yet —
+ * emulate it there. A backdrop click dispatches on the dialog element itself with coordinates
+ * outside its content box.
  */
 function lightDismissFallback(event: MouseEvent & { currentTarget: HTMLDialogElement }) {
   const dialog = event.currentTarget;

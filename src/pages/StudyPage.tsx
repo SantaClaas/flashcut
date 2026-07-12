@@ -1,9 +1,9 @@
 import { A, useParams } from "@solidjs/router";
 import { createMemo, createSignal, For, onSettled, refresh, Show } from "solid-js";
-import type { Grade } from "ts-fsrs";
+import { type Grade, State } from "ts-fsrs";
 
 import { Markdown } from "../components/Markdown";
-import { studyQueue } from "../db/cards";
+import { deckStateCounts, studyQueue } from "../db/cards";
 import { getDb } from "../db/client";
 import { getDeck } from "../db/decks";
 import { recordReview } from "../db/reviews";
@@ -18,11 +18,17 @@ async function fetchQueue(deckId: number) {
   return studyQueue(db, deckId, isoNow(), NEW_CARDS_PER_SESSION);
 }
 
+async function fetchStateCounts(deckId: number) {
+  const db = await getDb();
+  return deckStateCounts(db, deckId);
+}
+
 export default function StudyPage() {
   const params = useParams();
   const deckId = () => Number(params["id"]);
   const deck = createMemo(() => fetchDeck(deckId()));
   const queue = createMemo(() => fetchQueue(deckId()));
+  const stateCounts = createMemo(() => fetchStateCounts(deckId()));
 
   const [index, setIndex] = createSignal(0);
   const [revealed, setRevealed] = createSignal(false);
@@ -46,6 +52,7 @@ export default function StudyPage() {
       // Other tabs refresh their counts/stats; the session queue here stays
       // stable on purpose (no useBroadcast) so the card order doesn't shift.
       broadcastMessage({ type: "Reviews changed", deckId: deckId() });
+      refresh(stateCounts);
       setReviewedCount((count) => count + 1);
       setRevealed(false);
       setIndex((i) => i + 1);
@@ -87,6 +94,8 @@ export default function StudyPage() {
           {reviewedCount()} reviewed · {Math.max(queue().length - index(), 0)} left
         </span>
       </div>
+
+      <StateBar counts={stateCounts()} />
 
       <Show
         when={current()}
@@ -143,6 +152,53 @@ export default function StudyPage() {
 async function fetchDeck(id: number) {
   const db = await getDb();
   return getDeck(db, id);
+}
+
+const STATE_LABELS: Record<State, string> = {
+  [State.New]: "new",
+  [State.Learning]: "learning",
+  [State.Review]: "review",
+  [State.Relearning]: "relearning",
+};
+const BAR_STATES = [State.New, State.Learning, State.Relearning, State.Review];
+
+/** One segment per FSRS state, sized by its share of the deck's cards. */
+function StateBar(props: { counts: Record<State, number> }) {
+  const total = () => BAR_STATES.reduce((sum, state) => sum + props.counts[state], 0);
+  return (
+    <Show when={total() > 0}>
+      <div class="space-y-1.5">
+        <div
+          class="flex h-1.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800"
+          aria-hidden="true"
+        >
+          <For each={BAR_STATES}>
+            {(state) => (
+              <div
+                class="state-swatch"
+                data-state={state}
+                style={{ width: `${(props.counts[state] / total()) * 100}%` }}
+              />
+            )}
+          </For>
+        </div>
+        <p class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-stone-500">
+          <For each={BAR_STATES.filter((state) => props.counts[state] > 0)}>
+            {(state) => (
+              <span class="flex items-center gap-1.5">
+                <span
+                  class="state-swatch size-2 rounded-full"
+                  aria-hidden="true"
+                  data-state={state}
+                />
+                {props.counts[state]} {STATE_LABELS[state]}
+              </span>
+            )}
+          </For>
+        </p>
+      </div>
+    </Show>
+  );
 }
 
 function DoneScreen(props: { reviewedCount: number; onCheckForMore: () => void }) {
