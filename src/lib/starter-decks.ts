@@ -17,4 +17,11 @@ export const STARTER_DECKS: StarterDeck[] = [
     cardCount: 76,
     url: `${import.meta.env.BASE_URL}decks/programming-languages.flashcut.json`,
   },
+  {
+    name: "Requirements Engineering (PERE Klausur)",
+    description:
+      "Exam-focused RE deck from PERE lecture materials: User Stories, INVEST, quality criteria, Use Cases, interviews, risk, MVP/MMP, and Agile/Scrum.",
+    cardCount: 58,
+    url: `${import.meta.env.BASE_URL}decks/requirements-engineering-klausur.flashcut.json`,
+  },
 ];
