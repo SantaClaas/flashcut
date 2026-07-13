@@ -1,6 +1,6 @@
 import { A, useParams } from "@solidjs/router";
 import { createMemo, createSignal, For, onSettled, refresh, Show } from "solid-js";
-import { type Grade, State } from "ts-fsrs";
+import { type Grade, Rating, State } from "ts-fsrs";
 
 import { Markdown } from "../components/Markdown";
 import { deckStateCounts, studyQueue } from "../db/cards";
@@ -33,6 +33,12 @@ export default function StudyPage() {
   const [index, setIndex] = createSignal(0);
   const [revealed, setRevealed] = createSignal(false);
   const [reviewedCount, setReviewedCount] = createSignal(0);
+  const [gradeCounts, setGradeCounts] = createSignal<Record<Grade, number>>({
+    [Rating.Again]: 0,
+    [Rating.Hard]: 0,
+    [Rating.Good]: 0,
+    [Rating.Easy]: 0,
+  });
   const [busy, setBusy] = createSignal(false);
 
   const current = () => queue()[index()];
@@ -54,6 +60,7 @@ export default function StudyPage() {
       broadcastMessage({ type: "Reviews changed", deckId: deckId() });
       refresh(stateCounts);
       setReviewedCount((count) => count + 1);
+      setGradeCounts((counts) => ({ ...counts, [grade]: counts[grade] + 1 }));
       setRevealed(false);
       setIndex((i) => i + 1);
     } finally {
@@ -95,7 +102,22 @@ export default function StudyPage() {
         </span>
       </div>
 
-      <StateBar counts={stateCounts()} />
+      <SegmentBar
+        label="Deck"
+        segments={BAR_STATES.map((state) => ({
+          count: stateCounts()[state],
+          label: STATE_LABELS[state],
+          data: { "data-state": state },
+        }))}
+      />
+      <SegmentBar
+        label="Session"
+        segments={GRADES.map((grade) => ({
+          count: gradeCounts()[grade],
+          label: GRADE_LABELS[grade].toLowerCase(),
+          data: { "data-grade": grade },
+        }))}
+      />
 
       <Show
         when={current()}
@@ -162,9 +184,16 @@ const STATE_LABELS: Record<State, string> = {
 };
 const BAR_STATES = [State.New, State.Learning, State.Relearning, State.Review];
 
-/** One segment per FSRS state, sized by its share of the deck's cards. */
-function StateBar(props: { counts: Record<State, number> }) {
-  const total = () => BAR_STATES.reduce((sum, state) => sum + props.counts[state], 0);
+interface BarSegment {
+  count: number;
+  label: string;
+  /** Spread onto swatch elements; index.css colors .swatch by these. */
+  data: { "data-state": State } | { "data-grade": Grade };
+}
+
+/** A distribution bar: one segment per entry, sized by its share of the total. */
+function SegmentBar(props: { label: string; segments: BarSegment[] }) {
+  const total = () => props.segments.reduce((sum, segment) => sum + segment.count, 0);
   return (
     <Show when={total() > 0}>
       <div class="space-y-1.5">
@@ -172,26 +201,23 @@ function StateBar(props: { counts: Record<State, number> }) {
           class="flex h-1.5 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800"
           aria-hidden="true"
         >
-          <For each={BAR_STATES}>
-            {(state) => (
+          <For each={props.segments}>
+            {(segment) => (
               <div
-                class="state-swatch"
-                data-state={state}
-                style={{ width: `${(props.counts[state] / total()) * 100}%` }}
+                class="swatch"
+                {...segment.data}
+                style={{ width: `${(segment.count / total()) * 100}%` }}
               />
             )}
           </For>
         </div>
         <p class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-stone-500">
-          <For each={BAR_STATES.filter((state) => props.counts[state] > 0)}>
-            {(state) => (
+          <span class="font-medium">{props.label}</span>
+          <For each={props.segments.filter((segment) => segment.count > 0)}>
+            {(segment) => (
               <span class="flex items-center gap-1.5">
-                <span
-                  class="state-swatch size-2 rounded-full"
-                  aria-hidden="true"
-                  data-state={state}
-                />
-                {props.counts[state]} {STATE_LABELS[state]}
+                <span class="swatch size-2 rounded-full" aria-hidden="true" {...segment.data} />
+                {segment.count} {segment.label}
               </span>
             )}
           </For>

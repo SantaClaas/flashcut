@@ -92,19 +92,24 @@ body {
     @apply rounded-lg px-3 py-1.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-200 aria-[current=page]:text-teal-600 dark:text-stone-300 dark:hover:bg-stone-800 dark:aria-[current=page]:text-teal-400;
   }
 
-  /* Card-state bar segments and legend dots, colored by data-state
-     (ts-fsrs State values: 0=New, 1=Learning, 2=Review, 3=Relearning). */
-  .state-swatch {
-    &[data-state="0"] {
+  /* Distribution-bar segments and legend dots, colored either by FSRS state
+     (data-state: 0=New, 1=Learning, 2=Review, 3=Relearning) or by rating
+     (data-grade: 1=Again … 4=Easy, same palette as grade-btn). */
+  .swatch {
+    &[data-state="0"],
+    &[data-grade="4"] {
       @apply bg-sky-600;
     }
-    &[data-state="1"] {
+    &[data-state="1"],
+    &[data-grade="2"] {
       @apply bg-amber-600;
     }
-    &[data-state="2"] {
+    &[data-state="2"],
+    &[data-grade="3"] {
       @apply bg-teal-600;
     }
-    &[data-state="3"] {
+    &[data-state="3"],
+    &[data-grade="1"] {
       @apply bg-red-600;
     }
   }
