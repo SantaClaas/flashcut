@@ -28,8 +28,10 @@ export async function listDecks(db: DbConnection, nowIso: string): Promise<DeckS
   const rows = await db.all(
     `SELECT d.*,
        (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.id) AS total_count,
-       (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.id AND c.state = ${State.New}) AS new_count,
-       (SELECT COUNT(*) FROM cards c WHERE c.deck_id = d.id AND c.state != ${State.New} AND c.due <= ?) AS due_count
+       (SELECT COUNT(*) FROM card_schedules s JOIN cards c ON c.id = s.card_id
+          WHERE c.deck_id = d.id AND s.enabled = 1 AND s.state = ${State.New}) AS new_count,
+       (SELECT COUNT(*) FROM card_schedules s JOIN cards c ON c.id = s.card_id
+          WHERE c.deck_id = d.id AND s.enabled = 1 AND s.state != ${State.New} AND s.due <= ?) AS due_count
      FROM decks d
      ORDER BY d.name`,
     nowIso,
@@ -71,11 +73,15 @@ export async function updateDeck(
   await db.run("UPDATE decks SET name = ?, description = ? WHERE id = ?", name, description, id);
 }
 
-/** Deletes the deck plus its cards and their review logs. */
+/** Deletes the deck plus its cards, their schedules, and their review logs. */
 export async function deleteDeck(db: DbConnection, id: number): Promise<void> {
   await withTransaction(db, async () => {
     await db.run(
       "DELETE FROM review_logs WHERE card_id IN (SELECT id FROM cards WHERE deck_id = ?)",
+      id,
+    );
+    await db.run(
+      "DELETE FROM card_schedules WHERE card_id IN (SELECT id FROM cards WHERE deck_id = ?)",
       id,
     );
     await db.run("DELETE FROM cards WHERE deck_id = ?", id);

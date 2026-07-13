@@ -6,19 +6,17 @@ import { afterEach, expect, test } from "vitest";
 /**
  * Canary for a solid-js 2.0.0-beta.17 bug that StudyPage works around.
  *
- * With the non-keyed render-prop form `<Show when={…}>{(item) => …}</Show>`,
- * `item` is a guarded accessor that throws "Stale read from <Show>." when
- * called while `when` is falsy. If an async memo is refresh()ed in the same
- * flush that turns the condition falsy (StudyPage.rate() on the last card:
- * refresh(stateCounts) + setIndex past the queue end), the subtree suspends
- * under <Loading> and child memos re-run reading the accessor AFTER the
- * condition flipped but BEFORE <Show> disposed them — the error escapes to
- * the nearest <Errored>. StudyPage avoids this with `keyed`, which hands the
- * child the plain value instead of a throwing accessor.
+ * With the non-keyed render-prop form `<Show when={…}>{(item) => …}</Show>`, `item` is a guarded
+ * accessor that throws "Stale read from <Show>." when called while `when` is falsy. If an async
+ * memo is refresh()ed in the same flush that turns the condition falsy (StudyPage.rate() on the
+ * last card: refresh(stateCounts) + setIndex past the queue end), the subtree suspends under
+ * <Loading> and child memos re-run reading the accessor AFTER the condition flipped but BEFORE
+ * <Show> disposed them — the error escapes to the nearest <Errored>. StudyPage avoids this with
+ * `keyed`, which hands the child the plain value instead of a throwing accessor.
  *
- * If the FIRST test below starts FAILING after a solid-js upgrade, the bug is
- * fixed upstream: delete this file and feel free to drop `keyed` from the
- * study-card <Show> in src/pages/StudyPage.tsx.
+ * If the FIRST test below starts FAILING after a solid-js upgrade, the bug is fixed upstream:
+ * delete this file and feel free to drop `keyed` from the study-card <Show> in
+ * src/pages/StudyPage.tsx.
  */
 
 let dispose: (() => void) | undefined;

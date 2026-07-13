@@ -3,8 +3,15 @@ import { createMemo, createSignal, For, refresh, Show } from "solid-js";
 
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Markdown } from "../components/Markdown";
-import { createCard, deleteCard, listCards, updateCardContent } from "../db/cards";
+import {
+  createCard,
+  deleteCard,
+  listCards,
+  setReverseEnabled,
+  updateCardContent,
+} from "../db/cards";
 import { getDb } from "../db/client";
+import { withTransaction } from "../db/connection";
 import { getDeck } from "../db/decks";
 import { broadcastMessage, useBroadcast } from "../lib/broadcast";
 import { isoNow } from "../lib/time";
@@ -33,6 +40,7 @@ export default function DeckPage() {
 
   const [front, setFront] = createSignal("");
   const [back, setBack] = createSignal("");
+  const [reverse, setReverse] = createSignal(false);
   const [editingId, setEditingId] = createSignal<number | null>(null);
   const [showPreview, setShowPreview] = createSignal(false);
   const [cardToDelete, setCardToDelete] = createSignal<number>();
@@ -40,6 +48,7 @@ export default function DeckPage() {
   function resetForm() {
     setFront("");
     setBack("");
+    setReverse(false);
     setEditingId(null);
   }
 
@@ -49,16 +58,20 @@ export default function DeckPage() {
     const db = await getDb();
     const id = editingId();
     if (id == null) {
-      await createCard(
-        db,
-        deckId(),
-        front(),
-        back(),
-        isoNow(),
-        newCardFsrs(Temporal.Now.instant()),
+      await withTransaction(db, () =>
+        createCard(
+          db,
+          deckId(),
+          front(),
+          back(),
+          isoNow(),
+          newCardFsrs(Temporal.Now.instant()),
+          reverse() ? { enabled: true, fsrs: newCardFsrs(Temporal.Now.instant()) } : undefined,
+        ),
       );
     } else {
       await updateCardContent(db, id, front(), back());
+      await setReverseEnabled(db, id, reverse(), newCardFsrs(Temporal.Now.instant()));
     }
     resetForm();
     refresh(cards);
@@ -75,10 +88,11 @@ export default function DeckPage() {
     broadcastMessage({ type: "Cards changed", deckId: deckId() });
   }
 
-  function startEditing(id: number, cardFront: string, cardBack: string) {
+  function startEditing(id: number, cardFront: string, cardBack: string, cardReverse: boolean) {
     setEditingId(id);
     setFront(cardFront);
     setBack(cardBack);
+    setReverse(cardReverse);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -132,6 +146,14 @@ export default function DeckPage() {
               </Show>
             </div>
           </div>
+          <label class="flex items-center gap-1.5 text-sm text-stone-600 dark:text-stone-400">
+            <input
+              type="checkbox"
+              checked={reverse()}
+              onInput={(event) => setReverse(event.currentTarget.checked)}
+            />
+            Also study reversed (back → front)
+          </label>
           <div class="flex gap-2">
             <button type="submit" class="btn-primary">
               {editingId() == null ? "Add card" : "Save changes"}
@@ -156,10 +178,20 @@ export default function DeckPage() {
                     <Markdown source={item.front} />
                     <Markdown source={item.back} class="text-stone-600 dark:text-stone-400" />
                   </div>
-                  <div class="flex shrink-0 gap-1">
+                  <div class="flex shrink-0 items-center gap-1">
+                    <Show when={item.reverseEnabled}>
+                      <span
+                        class="text-sm text-stone-400 dark:text-stone-500"
+                        title="Also studied reversed (back → front)"
+                      >
+                        ⇄
+                      </span>
+                    </Show>
                     <button
                       class="btn-ghost"
-                      onClick={() => startEditing(item.id, item.front, item.back)}
+                      onClick={() =>
+                        startEditing(item.id, item.front, item.back, item.reverseEnabled)
+                      }
                     >
                       Edit
                     </button>

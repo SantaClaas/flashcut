@@ -54,7 +54,7 @@ export default function StudyPage() {
     try {
       const { fsrs, log } = rateCard(item, grade, Temporal.Now.instant());
       const db = await getDb();
-      await recordReview(db, item.id, fsrs, log);
+      await recordReview(db, item.id, item.direction, fsrs, log);
       // Other tabs refresh their counts/stats; the session queue here stays
       // stable on purpose (no useBroadcast) so the card order doesn't shift.
       broadcastMessage({ type: "Reviews changed", deckId: deckId() });
@@ -132,10 +132,10 @@ export default function StudyPage() {
         {(item) => (
           <>
             <div class="card mb-28 space-y-4 p-6">
-              <Markdown source={item.front} />
+              <Markdown source={item.direction === "reverse" ? item.back : item.front} />
               <Show when={revealed()}>
                 <hr class="border-stone-200 dark:border-stone-800" />
-                <Markdown source={item.back} />
+                <Markdown source={item.direction === "reverse" ? item.front : item.back} />
               </Show>
             </div>
 

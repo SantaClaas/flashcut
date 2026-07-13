@@ -1,6 +1,6 @@
 import { State } from "ts-fsrs";
 
-import { type FsrsColumns, createCard, listCards } from "../db/cards";
+import { type FsrsColumns, createCard, listCards, listSchedules } from "../db/cards";
 import { type DbConnection, withTransaction } from "../db/connection";
 import { createDeck, getDeck } from "../db/decks";
 import { newCardFsrs } from "../srs/scheduler";
@@ -10,33 +10,49 @@ export interface DeckExport {
   version: 1;
   exportedAt: string;
   deck: { name: string; description: string };
-  cards: Array<{ front: string; back: string; fsrs?: FsrsColumns }>;
+  cards: Array<{
+    front: string;
+    back: string;
+    /** Forward (front→back) schedule. */
+    fsrs?: FsrsColumns;
+    /** Back→front study; `enabled: false` is a dormant schedule keeping its progress. */
+    reverse?: { enabled: boolean; fsrs?: FsrsColumns };
+  }>;
 }
 
 export async function exportDeckJson(db: DbConnection, deckId: number): Promise<DeckExport> {
   const deck = await getDeck(db, deckId);
   if (!deck) throw new Error(`Deck ${deckId} not found`);
   const cards = await listCards(db, deckId);
+  const schedules = new Map(
+    (await listSchedules(db, deckId)).map((s) => [`${s.cardId}:${s.direction}`, s]),
+  );
+  const toFsrs = (s: FsrsColumns): FsrsColumns => ({
+    due: s.due,
+    stability: s.stability,
+    difficulty: s.difficulty,
+    elapsedDays: s.elapsedDays,
+    scheduledDays: s.scheduledDays,
+    learningSteps: s.learningSteps,
+    reps: s.reps,
+    lapses: s.lapses,
+    state: s.state,
+    lastReview: s.lastReview,
+  });
   return {
     version: 1,
     exportedAt: isoNow(),
     deck: { name: deck.name, description: deck.description },
-    cards: cards.map((item) => ({
-      front: item.front,
-      back: item.back,
-      fsrs: {
-        due: item.due,
-        stability: item.stability,
-        difficulty: item.difficulty,
-        elapsedDays: item.elapsedDays,
-        scheduledDays: item.scheduledDays,
-        learningSteps: item.learningSteps,
-        reps: item.reps,
-        lapses: item.lapses,
-        state: item.state,
-        lastReview: item.lastReview,
-      },
-    })),
+    cards: cards.map((item) => {
+      const forward = schedules.get(`${item.id}:forward`);
+      const reverse = schedules.get(`${item.id}:reverse`);
+      return {
+        front: item.front,
+        back: item.back,
+        ...(forward ? { fsrs: toFsrs(forward) } : {}),
+        ...(reverse ? { reverse: { enabled: reverse.enabled, fsrs: toFsrs(reverse) } } : {}),
+      };
+    }),
   };
 }
 
@@ -57,6 +73,10 @@ export async function importDeckJson(db: DbConnection, data: unknown): Promise<n
         item.back,
         now,
         item.fsrs ?? newCardFsrs(Temporal.Instant.from(now)),
+        item.reverse && {
+          enabled: item.reverse.enabled,
+          fsrs: item.reverse.fsrs ?? newCardFsrs(Temporal.Instant.from(now)),
+        },
       );
     }
     return deckId;
@@ -97,7 +117,8 @@ export function parseDeckExport(data: unknown): DeckExport {
       );
     }
     const fsrs = parseFsrs(cardRecord["fsrs"]);
-    return fsrs ? { front, back, fsrs } : { front, back };
+    const reverse = parseReverse(cardRecord["reverse"]);
+    return { front, back, ...(fsrs ? { fsrs } : {}), ...(reverse ? { reverse } : {}) };
   });
   return {
     version: 1,
@@ -120,6 +141,15 @@ const NUMERIC_FSRS_FIELDS = [
   "lapses",
   "state",
 ] as const;
+
+/** Returns a validated reverse entry, or undefined when absent/malformed (no reverse study). */
+function parseReverse(value: unknown): { enabled: boolean; fsrs?: FsrsColumns } | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const record = value as Record<string, unknown>;
+  if (typeof record["enabled"] !== "boolean") return undefined;
+  const fsrs = parseFsrs(record["fsrs"]);
+  return { enabled: record["enabled"], ...(fsrs ? { fsrs } : {}) };
+}
 
 /** Returns validated FSRS state, or undefined when absent/malformed (card restarts as new). */
 function parseFsrs(value: unknown): FsrsColumns | undefined {

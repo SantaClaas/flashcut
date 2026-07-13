@@ -1,6 +1,6 @@
 import { State } from "ts-fsrs";
 
-import { type FsrsColumns, updateCardFsrs } from "./cards";
+import { type Direction, type FsrsColumns, updateScheduleFsrs } from "./cards";
 import { type DbConnection, withTransaction } from "./connection";
 
 /** A ts-fsrs ReviewLog with dates as ISO UTC strings. */
@@ -17,21 +17,23 @@ export interface ReviewLogColumns {
   review: string;
 }
 
-/** Atomically applies a rating: updates the card's FSRS state and appends the log. */
+/** Atomically applies a rating: updates the schedule's FSRS state and appends the log. */
 export async function recordReview(
   db: DbConnection,
   cardId: number,
+  direction: Direction,
   fsrs: FsrsColumns,
   log: ReviewLogColumns,
 ): Promise<void> {
   await withTransaction(db, async () => {
-    await updateCardFsrs(db, cardId, fsrs);
+    await updateScheduleFsrs(db, cardId, direction, fsrs);
     await db.run(
       `INSERT INTO review_logs (
-         card_id, rating, state, due, stability, difficulty,
+         card_id, direction, rating, state, due, stability, difficulty,
          elapsed_days, last_elapsed_days, scheduled_days, learning_steps, review
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       cardId,
+      direction,
       log.rating,
       log.state,
       log.due,
@@ -63,8 +65,10 @@ export async function totalReviewCount(db: DbConnection): Promise<number> {
   return Number(row?.["count"] ?? 0);
 }
 
-/** Due instants of all scheduled (non-new) cards, for the forecast chart. */
+/** Due instants of all scheduled (non-new, non-dormant) study items, for the forecast chart. */
 export async function scheduledDueTimes(db: DbConnection): Promise<string[]> {
-  const rows = await db.all(`SELECT due FROM cards WHERE state != ${State.New} ORDER BY due`);
+  const rows = await db.all(
+    `SELECT due FROM card_schedules WHERE enabled = 1 AND state != ${State.New} ORDER BY due`,
+  );
   return rows.map((row) => String(row["due"]));
 }
