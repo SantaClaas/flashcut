@@ -16,6 +16,7 @@ This repo uses Solid 2.0 (`solid-js@next`, `@solidjs/web`, `@solidjs/router@next
 - Batching: setters don't update reads until the microtask flush; never read a signal right after setting it expecting the new value (use `flush()` in tests only).
 - `render` comes from `@solidjs/web` (not `solid-js/web`); `jsxImportSource` is `@solidjs/web` (tsconfig.app.json).
 - `src/router-jsx-compat.d.ts` shims the router's stale JSX types (`<A class=…>`); remove once @solidjs/router ships @solidjs/web-based types.
+- beta.17 bug: a non-keyed render-prop `<Show>` throws "Stale read from `<Show>`." when a `refresh()` of an async memo lands in the same flush that turns `when` falsy (suspended child memos re-run before disposal). Workaround: `keyed`. Canary: `src/solid-stale-show.test.tsx` — if its first test fails after a solid-js upgrade, the bug is fixed upstream and the workaround (StudyPage) can be dropped.
 - Renames if needed later: `mergeProps`→`merge`, `splitProps`→`omit`, `unwrap`→`snapshot`, store setters are draft-first (produce-style).
 
 ## Commands

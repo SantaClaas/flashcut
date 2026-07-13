@@ -119,17 +119,23 @@ export default function StudyPage() {
         }))}
       />
 
+      {/* `keyed` works around a solid-js 2.0.0-beta.17 bug: rating the last card
+          puts refresh(stateCounts) in the same flush as current() turning
+          undefined, and the suspended re-run reads the non-keyed narrowed
+          accessor after the condition flipped — "Stale read from <Show>".
+          Canary test: src/solid-stale-show.test.tsx (drop `keyed` when it fails). */}
       <Show
+        keyed
         when={current()}
         fallback={<DoneScreen reviewedCount={reviewedCount()} onCheckForMore={checkForMore} />}
       >
         {(item) => (
           <>
             <div class="card mb-28 space-y-4 p-6">
-              <Markdown source={item().front} />
+              <Markdown source={item.front} />
               <Show when={revealed()}>
                 <hr class="border-stone-200 dark:border-stone-800" />
-                <Markdown source={item().back} />
+                <Markdown source={item.back} />
               </Show>
             </div>
 
