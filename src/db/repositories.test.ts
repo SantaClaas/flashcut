@@ -67,7 +67,12 @@ describe("decks", () => {
 });
 
 describe("studyQueue", () => {
-  it("returns due cards before new cards and respects the new-card limit", async () => {
+  // Deterministic rng stubs: keepOrder makes Fisher-Yates a no-op (j === i),
+  // reverse always picks j === 0, which flips two-element buckets.
+  const keepOrder = () => 0.999999;
+  const reverse = () => 0;
+
+  it("respects the new-card limit and spreads new cards through the due cards", async () => {
     const db = await openTestDb();
     const deckId = await createDeck(db, "Deck", "", nowIso);
     const newIds = [];
@@ -80,9 +85,24 @@ describe("studyQueue", () => {
     await recordReview(db, dueId, fsrs, log);
 
     const later = "2027-01-01T00:00:00.000Z";
-    const queue = await studyQueue(db, deckId, later, 2);
-    expect(queue.map((c) => c.id)).toEqual([dueId, newIds[0], newIds[1]]);
-    expect(queue[0]!.state).not.toBe(State.New);
+    const queue = await studyQueue(db, deckId, later, 2, keepOrder);
+    // The oldest two new cards are selected and interleaved with the due card.
+    expect(queue.map((c) => c.id)).toEqual([newIds[0], dueId, newIds[1]]);
+  });
+
+  it("shuffles due cards within a day but keeps older days first", async () => {
+    const db = await openTestDb();
+    const deckId = await createDeck(db, "Deck", "", nowIso);
+    const dueOn = (due: string) => ({ ...newCardFsrs(now), state: State.Review, due });
+    const a1 = await createCard(db, deckId, "a1", "x", nowIso, dueOn("2026-07-09T08:00:00.000Z"));
+    const a2 = await createCard(db, deckId, "a2", "x", nowIso, dueOn("2026-07-09T09:00:00.000Z"));
+    const b1 = await createCard(db, deckId, "b1", "x", nowIso, dueOn("2026-07-10T08:00:00.000Z"));
+
+    const ids = async (rng: () => number) =>
+      (await studyQueue(db, deckId, nowIso, 0, rng)).map((c) => c.id);
+    expect(await ids(keepOrder)).toEqual([a1, a2, b1]);
+    // Within the 2026-07-09 bucket the order flips; the newer day stays last.
+    expect(await ids(reverse)).toEqual([a2, a1, b1]);
   });
 });
 

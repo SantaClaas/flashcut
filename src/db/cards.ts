@@ -145,24 +145,54 @@ export async function deckStateCounts(
   return counts;
 }
 
+/** In-place Fisher-Yates shuffle. */
+function shuffle<T>(items: T[], rng: () => number): T[] {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    const tmp = items[i]!;
+    items[i] = items[j]!;
+    items[j] = tmp;
+  }
+  return items;
+}
+
+/** Merge `secondary` evenly into `primary`, preserving each list's order. */
+function interleave<T>(primary: T[], secondary: T[]): T[] {
+  const result: T[] = [];
+  let p = 0;
+  let s = 0;
+  while (p < primary.length || s < secondary.length) {
+    const takePrimary =
+      s >= secondary.length ||
+      (p < primary.length && (p + 1) * secondary.length <= (s + 1) * primary.length);
+    result.push(takePrimary ? primary[p++]! : secondary[s++]!);
+  }
+  return result;
+}
+
 /**
- * The study queue: cards due for review (oldest due first), followed by up to `newLimit`
- * never-studied cards.
+ * The study queue: cards due for review, oldest day first but in random order within
+ * each day, with up to `newLimit` never-studied cards (picked oldest-first, presented
+ * in random order) spread evenly through the queue. The shuffling breaks the replay
+ * of the previous session's order (cards reviewed back-to-back get due timestamps in
+ * that same order) to avoid sequence-memorization effects; the day bucketing still
+ * prioritizes a multi-day backlog.
  */
 export async function studyQueue(
   db: DbConnection,
   deckId: number,
   nowIso: string,
   newLimit: number,
+  rng: () => number = Math.random,
 ): Promise<CardRecord[]> {
-  const due = await db.all(
+  const dueRows = await db.all(
     `SELECT * FROM cards
      WHERE deck_id = ? AND state != ${State.New} AND due <= ?
      ORDER BY due`,
     deckId,
     nowIso,
   );
-  const fresh = await db.all(
+  const freshRows = await db.all(
     `SELECT * FROM cards
      WHERE deck_id = ? AND state = ${State.New}
      ORDER BY id
@@ -170,5 +200,19 @@ export async function studyQueue(
     deckId,
     newLimit,
   );
-  return [...due, ...fresh].map(toCardRecord);
+
+  // Shuffle due cards within each UTC day (timestamps have a uniform ISO format,
+  // so the first 10 chars are the day). Everything here is already due, so the
+  // exact time within a day carries no scheduling meaning.
+  const due = dueRows.map(toCardRecord);
+  const bucketed: CardRecord[] = [];
+  for (let start = 0; start < due.length; ) {
+    const day = due[start]!.due.slice(0, 10);
+    let end = start + 1;
+    while (end < due.length && due[end]!.due.slice(0, 10) === day) end++;
+    bucketed.push(...shuffle(due.slice(start, end), rng));
+    start = end;
+  }
+
+  return interleave(bucketed, shuffle(freshRows.map(toCardRecord), rng));
 }
