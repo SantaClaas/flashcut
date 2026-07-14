@@ -17,4 +17,11 @@ export const STARTER_DECKS: StarterDeck[] = [
     cardCount: 76,
     url: `${import.meta.env.BASE_URL}decks/programming-languages.flashcut.json`,
   },
+  {
+    name: "Requirements Engineering (PERE)",
+    description:
+      "Klausurvorbereitung: Rupp-Schablone & Sprachdefekte, User Stories & INVEST, Anforderungstypen, Use Cases, Interviews, MVP/Kano, Agilität, Splitting/Slicing, Risiko.",
+    cardCount: 103,
+    url: `${import.meta.env.BASE_URL}decks/requirements-engineering.flashcut.json`,
+  },
 ];

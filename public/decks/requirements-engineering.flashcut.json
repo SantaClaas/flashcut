@@ -1,0 +1,422 @@
+{
+  "version": 1,
+  "exportedAt": "2026-07-14T09:57:17.723Z",
+  "deck": {
+    "name": "Requirements Engineering (PERE)",
+    "description": "Klausurvorbereitung Produktentwicklung & Requirements Engineering: Rupp-Schablone & Sprachdefekte, User Stories & INVEST, Akzeptanzkriterien, funktionale vs. Qualitätsanforderungen & Constraints, Kontextszenarien, Use Cases, Interviews & Stakeholder, Problem- vs. Lösungsraum, MVP/MMP & Kano, Agilität & Scrum, Splitting/Slicing, Risikobewertung."
+  },
+  "cards": [
+    {
+      "front": "Wie ist eine **User Story** aufgebaut (Satzschablone)? Benenne die drei Bestandteile des Narrativs.",
+      "back": "**Als** *⟨Rolle⟩* **möchte ich** *⟨Aktivität⟩*, **um/damit** *⟨Bedürfnis/Ziel⟩*.\n\n- **Rolle**: Domänenrolle des Users (z. B. Neurologin, Product Owner)\n- **Aktivität**: was der User mit dem Produkt tun möchte (Verb!)\n- **Ziel/Bedürfnis**: warum — der Mehrwert\n\nDas Ziel ist formal optional, aber praktisch das Entscheidende: Ohne Ziele kann man weder priorisieren noch beim Implementieren kompetent entscheiden. „Wer die Ziele weglässt, kann auch einfach Tickets schreiben.“"
+    },
+    {
+      "front": "Warum ist das **Ziel** in einer User Story so wichtig, obwohl es manche Autoren weglassen?",
+      "back": "- Beim Implementieren merkt man erst, was fehlt oder sich widerspricht — wer das Ziel kennt, kann **selbst kompetent entscheiden** (z. B.: 200 ms gefordert, 250 ms geschafft — reicht das?)\n- Ohne Ziel kann man **Alternativen zur Umsetzung nicht bewerten**\n- Ziele sind die Basis für **Priorisierung nach Mehrwert**\n- Bei der **Validierung** prüft man, ob das Ziel erreicht wurde"
+    },
+    {
+      "front": "„A user story is a promise for a conversation“ — was bedeutet das 3C-Prinzip (Card, Conversation, Confirmation)?",
+      "back": "Eine Story ist mehr als das Aufgeschriebene:\n\n- **Card**: das knappe Narrativ + Akzeptanzkriterien auf der Karte\n- **Conversation**: die Gespräche mit den Stakeholdern, in denen die Details geklärt werden (nicht alles wird verschriftlicht — der agile Prozess, z. B. Sprint Planning, muss dieses Wissen ins Team tragen)\n- **Confirmation**: zu den Akzeptanzkriterien muss es irgendwann Akzeptanztests geben"
+    },
+    {
+      "front": "Was steht auf **Vorder- und Rückseite** einer Story Card?",
+      "back": "**Vorne:** Narrativ (Als … möchte ich … um …), grobe Aufwandsschätzung (eher T‑Shirt‑Größe S/M/L als Personentage), Markierung **offener Punkte**.\n\n**Hinten:** Akzeptanzkriterien, Notizen, Links zu Dokumenten/Spezifikationen.\n\nWichtig: Offene Punkte immer sichtbar dokumentieren — das Schlimmste ist ein Artefakt, das fertig wirkt, obwohl noch etwas ungeklärt ist."
+    },
+    {
+      "front": "Was sind **Akzeptanzkriterien** einer User Story und welche zwei Stile gibt es, sie zu formulieren?",
+      "back": "Eine Liste von Vereinbarungen, die erfüllt sein müssen, damit die Story als umgesetzt gilt (≈ Erwartungshorizont für Akzeptanztests).\n\n- **Informell** (Cohn): kurze Stichpunkte, z. B. „works with Visa, MasterCard, Amex“ — für alle Stakeholder verständlich\n- **Strukturiert** (BDD, Gherkin): *Given* ⟨Vorbedingung⟩ *When* ⟨Aktion⟩ *Then* ⟨Ergebnis⟩ — daraus lassen sich automatische Tests ableiten, kann für nicht-technische User aber zu technisch sein"
+    },
+    {
+      "front": "Woran erkennt man ein **gutes Akzeptanzkriterium**, und wohin driften Akzeptanzkriterien leicht ab?",
+      "back": "Gut: **konkret und testbar** (man kann sich den Test vorstellen), präzisiert die Erwartungen (auch Qualitätskriterien wie „Suchzeit ≤ 1 s“), jedes Kriterium repräsentiert genau **eine** funktionale ODER Qualitätsanforderung.\n\nGefahr: Akzeptanzkriterien driften in den **Lösungsraum** (UI-Details, konkrete Mechanismen). Wenn etwas noch ungeklärt ist („Anzeige vs. Filterung“), lieber als **offenen Punkt** markieren statt eine Lösung festzuschreiben."
+    },
+    {
+      "front": "Wofür steht **INVEST** bei User Stories?",
+      "back": "Qualitätskriterien für User Stories:\n\n- **I**ndependent — unabhängig (Verständnis, Priorisierung, Test, Implementierung)\n- **N**egotiable — Details noch verhandelbar, keine Lösung vorgeben\n- **V**aluable — Mehrwert für den User klar erkennbar\n- **E**stimable — Aufwand abschätzbar\n- **S**mall (später: **Scalable**) — klein genug für einen Sprint / passend skaliert\n- **T**estable — konkrete, testbare Akzeptanzkriterien"
+    },
+    {
+      "front": "INVEST **I — Independent**: In welchen vier Hinsichten sollen Stories unabhängig sein, und welche davon ist am wichtigsten und am ehesten erreichbar?",
+      "back": "1. **Verständnis** — jede Story ist für sich lesbar/verständlich\n2. **Priorisierung** — beliebig anordenbar\n3. **Test** — unabhängig testbar\n4. **Implementierung/Aufwandsschätzung** — praktisch kaum erreichbar, weil Stories gemeinsame Komponenten teilen und der Aufwand von der Implementierungsreihenfolge abhängt\n\nAm wichtigsten und am leichtesten erreichbar: **Unabhängigkeit im Verständnis**."
+    },
+    {
+      "front": "INVEST **N — Negotiable**: Was macht eine Story „verhandelbar“? (Häufiger Klausur-Fehler!)",
+      "back": "Es geht **nicht** um „nicht zu genau aufschreiben“, sondern um **Problemraum- statt Lösungsraum-Darstellung**: Die Essenz des Bedürfnisses möglichst genau erfassen, ohne die Lösung vorzugeben.\n\nSchlecht: „…möchte ich alle Eingabefelder direkt untereinander angeordnet sehen…“ (Lösung vorgegeben)\nBesser: „…möchte ich ohne Navigieren und Klicken mehrere Stories mit Akzeptanzkriterien schreiben können, um im Schreibfluss zu bleiben.“"
+    },
+    {
+      "front": "INVEST **V — Valuable**: Woran erkennt man, dass eine Story echten Mehrwert ausdrückt?",
+      "back": "Eine gute Story beschreibt nicht, was man **im System** tut, sondern was man damit **im Nutzungskontext bewirkt** (Wechselwirkung Software ↔ Umwelt).\n\nSchlecht: „Als PO möchte ich Stories nach Erstellungsdatum sortieren“ — fällt bei jeder Priorisierung hinten runter, weil kein Ziel erkennbar.\nBesser: „Als PO möchte ich alte, nicht umgesetzte Kunden-Stories finden, um sie höher zu priorisieren, **bevor eine Eskalation droht**“ — echtes Business-Ziel, danach kann man priorisieren."
+    },
+    {
+      "front": "INVEST **E — Estimable**: Nenne drei Gründe, warum eine Story nicht abschätzbar sein kann, und die jeweilige Gegenmaßnahme.",
+      "back": "1. **Domänenwissen fehlt** → Story/Akzeptanzkriterien verfeinern, fachliche Spezifikation schreiben\n2. **Technisches Wissen fehlt** → **Spike**: timeboxte Recherche/Prototyp in einem Sprint, Schätzung liegt im nächsten Sprint vor\n3. **Story zu groß** → in kleinere Stories splitten und einzeln schätzen\n\n(Grundsatz: Schätzungen hängen immer vom Implementierungsstand ab — deshalb Stories nicht früh in Personentagen schätzen.)"
+    },
+    {
+      "front": "INVEST **S**: Wann ist eine Story zu groß, wann zu klein — und warum wurde „Small“ später durch „Scalable“ ersetzt?",
+      "back": "**Zu groß** („Epic“): keine Akzeptanzkriterien benennbar, Aufwand nicht schätzbar, nicht in 1–2 Sprints schaffbar → splitten.\n**Zu klein**: einzelne Teile bieten keinen eigenen Mehrwert mehr → gruppieren oder einfach als Tickets führen.\n\n**Scalable**: Der richtige Detailgrad hängt von der Phase ab — früh grobe Epics sammeln, zur Release-Planung mittlere Stories, zur Sprint-Planung kleine umsetzbare Einheiten (Slicing)."
+    },
+    {
+      "front": "INVEST **T — Testable**: Was prüft dieses Kriterium außer der Testbarkeit der Akzeptanzkriterien noch?",
+      "back": "Auch die **Realisierbarkeit**: Wenn man sich keine Tests ausdenken kann, ist die Story oft gar nicht umsetzbar oder nicht zu Ende gedacht.\n\nBeispiel: „Ich möchte die **volle** Funktionalität offline nutzen“ — bei einem Kollaborationstool unrealistisch (Synchronisation braucht Netz). Nachfragen und eingrenzen: „Tickets offline lesen/anlegen, bei Verbindung automatische Synchronisation“ — das ist testbar und umsetzbar."
+    },
+    {
+      "front": "Was sind **Technical Stories**, und warum gelten sie vielen als Antipattern?",
+      "back": "Stories aus Sicht der **Entwickler** statt der User („Als Entwickler möchte ich Komponente X refactoren…“), z. B. für Refactorings.\n\nKritik: Stories sollen die **Arbeit der User** in der Domäne beschreiben, nicht die der Entwickler. Zu viele Technical Stories im Backlog → der Bezug zum Nutzer-Mehrwert geht verloren. Alternative: technische Arbeit als normales Product-Backlog-Item/Ticket führen, nicht ins Story-Format pressen."
+    },
+    {
+      "front": "Wie kommt man von einem **Kontextszenario** zu einer Liste von User Stories?",
+      "back": "Im Szenario alle **Aktivitäten (Verben)** markieren, die der User mit dem Produkt ausführt (suchen, identifizieren, anlegen, verschieben …) — Tätigkeiten außerhalb des Produkts (z. B. „besprechen“ im Meeting) gehören nicht dazu.\n\nDann pro Aktivität prüfen: eigene Story mit eigenem Ziel? Anschließend optimieren: Ziele auf passendem Abstraktionsniveau wählen, Ähnliches zusammenfassen, Details in Akzeptanzkriterien verschieben."
+    },
+    {
+      "front": "Unterscheide **funktionale Anforderung**, **Qualitätsanforderung** und **Constraint** (nach Pohl/Rupp bzw. IREB).",
+      "back": "- **Funktionale Anforderung**: welche **Funktionen** das Produkt bereitstellen soll und unter welchen Bedingungen es was tun soll (Ergebnis/Verhalten einer Funktion)\n- **Qualitätsanforderung**: Forderung an **Eigenschaften** des Produkts, die **keine eigene Funktion** darstellen (Qualitätsmerkmal)\n- **Constraint (Randbedingung/Vorgabe)**: Anforderung, die den **Lösungsraum** über das Notwendige hinaus **einschränkt** (z. B. Programmiersprache, Framework, Design System, Termin)"
+    },
+    {
+      "front": "Woran erkennst du in einem konkreten Satz, ob er eine **funktionale** oder eine **Qualitätsanforderung** beschreibt?",
+      "back": "**Funktional**: beschreibt, **was wann getan** werden soll — Auslösebedingung + Aktion („30 s nach Erfüllung aller Fahrwünsche fährt der Fahrstuhl ins EG“ → funktional, die 30 s sind eine Auslösebedingung).\n\n**Qualität**: Bedingung an die **Ausgabe/Auswirkung/Güte** der Reaktion, oft über **mehrere Funktionen** hinweg („alle visuellen Rückmeldungen ≤ 100 ms“, „Bedienung sprachunabhängig intuitiv“). Lässt sich nicht als separates Feature zu beliebiger Zeit implementieren — muss ganzheitlich durch das Systemdesign sichergestellt werden."
+    },
+    {
+      "front": "Warum spielen **Qualitätsanforderungen und Constraints** im Entwicklungsprozess eine Sonderrolle gegenüber funktionalen Anforderungen?",
+      "back": "- Sie haben starken Einfluss auf **Architektur, Technologiewahl und Interaktionsdesign** — deshalb sollten sie vor dem Architekturentwurf bekannt sein\n- Sie können i. d. R. **nicht punktuell/zu beliebigem Zeitpunkt** umgesetzt werden (betreffen viele Funktionen oder das ganze System)\n- Sie sind **nicht priorisierbar** — sie gelten als festgesetzt"
+    },
+    {
+      "front": "Qualitätsanforderung vs. Constraint: „Die Benutzerschnittstelle soll Deutsch und Englisch unterstützen“ — was ist das?",
+      "back": "Kommt auf die **Quelle/Absicht** an:\n\n- „Als Benutzer möchte ich die UI in meiner Muttersprache, um mich schnell zurechtzufinden“ → **funktionale Anforderung** (Bedürfnis)\n- „Als Hersteller lege ich fest, dass Version 1.4 nur Deutsch und Englisch unterstützt, um den Aufwand zu begrenzen“ → **Constraint** (bewusste Einschränkung des Lösungsraums)\n\nConstraints sind Einschränkungen/Festlegungen (oft vom Hersteller oder per Vertrag), keine zusätzlichen Bedürfnisse."
+    },
+    {
+      "front": "Nenne einige **Qualitätskategorien** für Softwareprodukte (ISO/IEC 25010:2023) mit je einem Beispiel.",
+      "back": "(Nicht auswendig aufzählen müssen — aber erkennen können:)\n\n- **Funktionale Eignung** — macht das Richtige, korrekt & vollständig\n- **Leistungseffizienz** — Antwortzeit, Ressourcen, Last\n- **Kompatibilität** — Interoperabilität mit anderen Systemen\n- **Interaktionsfähigkeit** (früher Usability) — Bedienbarkeit, Lernbarkeit, Barrierefreiheit\n- **Zuverlässigkeit** — Verfügbarkeit, Fehlertoleranz\n- **Informationssicherheit** (Security)\n- **Funktionale Sicherheit** (Safety, neu 2023) — keine Schäden an Menschen/Umwelt\n- **Wartbarkeit**, **Flexibilität** (früher Portability)"
+    },
+    {
+      "front": "Warum formuliert man Anforderungen meist in **natürlicher Sprache**, und was sind die Nachteile?",
+      "back": "**Vorteile:** für jede Art von Anforderung nutzbar, Stakeholder müssen keine Diagrammnotation lernen, schnell formuliert; heute auch gut von LLMs verarbeitbar.\n\n**Nachteile:** Sprache wird mehrdeutig verwendet, Fehler und vermischte Perspektiven, Vollständigkeit/Konsistenz schwerer prüfbar als bei Diagrammen.\n\nGegenmittel: ein Satz pro Anforderung, Satzschablonen, konsistente Begriffe (Glossar), Strukturierung des Dokuments."
+    },
+    {
+      "front": "Welche **drei Spracheffekte** (aus der Neurolinguistik) mindern die Qualität sprachlicher Anforderungen?",
+      "back": "- **Tilgung**: etwas fehlt — unvollständige Prozesswörter, Substantive ohne Bezugsindex, unvollständige Bedingungen, fehlender Akteur\n- **Verzerrung**: Bedeutung verschoben — v. a. **Nominalisierung** (Prozess als Nomen versteckt)\n- **Generalisierung**: zu allgemein — v. a. **Universalquantoren** (alle, jeder, immer, nie)\n\nZiel: diese Transformationen erkennen und präzisieren/eliminieren."
+    },
+    {
+      "front": "Sprachdefekt **Nominalisierung**: Woran erkennst du ihn, und wie behebst du ihn? (Beispiel: „DevOS muss Entwicklerinnen eine Review-Möglichkeit bieten.“)",
+      "back": "Ein Prozess wird nur als **Nomen** genannt („Review-Möglichkeit“, „Archivierung“) und es gibt **kein richtiges Verb** — der Prozess wird behandelt, als sei er schon definiert. Als Anforderung untestbar; taugt höchstens als Epic-Überschrift.\n\n**Beheben:** die konkreten **Aktivitäten** (Verben) des Prozesses sammeln: Review starten, Reviewer festlegen, Review annehmen, Kommentare zurückmelden, als abgeschlossen markieren, …"
+    },
+    {
+      "front": "Was ist ein **Funktionsverbgefüge**, und wann ist es in einer Anforderung problematisch?",
+      "back": "Weitgehend **inhaltsleere Verben** wie *bieten, ermöglichen, bereitstellen, unterstützen, gewährleisten, erlauben, zur Verfügung stellen*.\n\nProblematisch, wenn ein solches Verb das **einzige Verb im Satz** ist — dann fehlt das eigentliche Prozesswort. (In der Rupp-Schablone kommt „die Möglichkeit bieten, ⟨X⟩ **zu tun**“ bewusst vor — dort trägt der Infinitiv die Funktion.)"
+    },
+    {
+      "front": "Sprachdefekt **Substantiv ohne Bezugsindex**: Beispiele und Abhilfe?",
+      "back": "Nomen, die scheinbar klar, aber mehrdeutig sind: *Anwender, System, Daten, Meldung, Repository*.\n\n- „Der Anwender“ → welche **Rolle**? (Admin, Neurologin, Product Owner …)\n- „Daten“ → welcher Typ von Daten?\n- „Repository“ → Git-Repository oder Research-Repository?\n\nAbhilfe: präzisen Begriff nennen; **Glossar** pflegen (inkl. „nicht verwechseln mit …“ / „nicht verwenden, stattdessen …“) und Konsistenz prüfen."
+    },
+    {
+      "front": "Sprachdefekt **unvollständiges Prozesswort**: Was fehlt bei „Die Daten müssen übertragen werden“?",
+      "back": "Bestimmte Verben brauchen **Ergänzungen**: *übertragen* → **von wo nach wo**? (ebenso: speichern → wo/für wen, anzeigen → wem …)\n\nBeispiel aus der Vorlesung: „Spaltenauswahl und -breite speichern“ — für **wen**? Lokal als persönliche Einstellung oder als Projektvorgabe für alle Benutzer? Das sind verschiedene Ziele und eigentlich verschiedene Anforderungen."
+    },
+    {
+      "front": "Sprachdefekt **unvollständige Bedingung**: Was ist an „…soll die Stories auflisten, zu denen keine Tickets existieren“ problematisch?",
+      "back": "Die Bedingung ist nicht genau genug durchdacht. Gemeint war: Stories, zu denen **keine offenen UND keine erfolgreich abgeschlossenen** Tickets existieren (ein failed/discarded Ticket zählt nicht — dann braucht es trotzdem neue Tickets).\n\nFaustregeln: Bei jeder Bedingung fragen: **Was passiert im anderen Fall?** Sind alle Fälle abgedeckt? Hilfreich: sich den Test dazu vorstellen."
+    },
+    {
+      "front": "Sprachdefekt **fehlender Akteur**: Woran erkennt man ihn, und warum ist er problematisch?",
+      "back": "Typisch: **Passiv**-Formulierungen. „Nicht mehr aktiv zu bearbeitende Tickets sollen ins Ticket-Archiv **verschoben werden**.“ — Wer verschiebt?\n\nZwei völlig verschiedene Anforderungen möglich: (a) der **User** kann Tickets verschieben (Interaktion), (b) das **System** verschiebt automatisch nach Regeln (selbstständige Aktivität). Deshalb: **aktiv formulieren**, Akteur bzw. Komponente nennen."
+    },
+    {
+      "front": "Warum sind **Universalquantoren** (alle, jeder, immer, nie) in Anforderungen eine Red Flag?",
+      "back": "Sie sind meist **unreflektiert generalisiert**: „Alle Daten müssen …“ stimmt fast nie — gemeint ist meist ein bestimmter Datentyp oder Daten mit bestimmtem Kriterium.\n\nBei jedem „alle/immer/nie“ genauer hinschauen: Welche Bedingung steckt wirklich dahinter? Welcher Fall ist ausgenommen — und was soll dann passieren?"
+    },
+    {
+      "front": "Wie lautet die **Rupp-Satzschablone** für funktionale Anforderungen, und wie unterscheidet sie die drei Aktivitätstypen?",
+      "back": "⟨Wenn/Sobald/Falls Bedingung⟩ **MUSS/SOLL/KANN** ⟨das System⟩ …\n\n1. **Selbstständige Systemaktivität**: ⟨System⟩ muss ⟨Objekt+Ergänzungen⟩ ⟨Prozesswort⟩. — „DevOS muss alle Spezifikationsartefakte als Textdateien persistieren.“\n2. **Benutzerinteraktion**: ⟨System⟩ muss ⟨Akteur⟩ **die Möglichkeit bieten / ermöglichen**, ⟨Objekt⟩ zu ⟨Prozesswort⟩. — „…muss der Neurologin ermöglichen, die Amplitude in 0,5-mA-Schritten zu erhöhen.“\n3. **Schnittstellenanforderung**: ⟨System⟩ muss **fähig sein**, ⟨…⟩ zu ⟨Prozesswort⟩. — Reaktion auf ein anderes System."
+    },
+    {
+      "front": "Was ist beim **⟨System⟩-Platzhalter** und bei den **Bedingungswörtern** der Rupp-Schablone zu beachten?",
+      "back": "**System**: nie wörtlich „das System“ schreiben, sondern das konkrete System bzw. die Komponente (DevOS, DevOS-Service, StoryMapView) — je nachdem ob System- oder Komponentenanforderung.\n\n**Bedingungen**: zeitlich = *sobald, nachdem, während, solange*; logisch = *falls*. Das Wort **„wenn“ vermeiden** — im Deutschen zweideutig (zeitlich oder logisch)."
+    },
+    {
+      "front": "Wie sieht die **Rupp-Schablone für Qualitätsanforderungen** aus, und wo liegt ihre Grenze?",
+      "back": "Kern: ⟨betrachtete Größe⟩ ⟨Vergleichsoperator⟩ ⟨Zahl⟩ — Qualitätsanforderungen sollen **quantifizierbar** aufgeschrieben werden.\n\nBeispiele: „Antwortzeit beim Laden von 500 Stories ≤ 2 s“, „Einarbeitungszeit ≤ 2 h“, „< 1 Absturz pro 100 Betriebsstunden“.\n\nGrenze: Nicht alle Qualitätsanforderungen sind quantifizierbar (z. B. „Schicht A darf nicht auf Schicht B zugreifen“) — trotzdem gültige Qualitätsanforderungen."
+    },
+    {
+      "front": "Was bedeutet das **MoSCoW-Schema**, und warum ist das W besonders wertvoll?",
+      "back": "Priorisierung von Anforderungen: **M**ust – **S**hould – **C**ould – **W**on't.\n\n**Won't** ist eine explizite, dokumentierte Entscheidung: „diskutiert und bewusst nicht umgesetzt“ (idealerweise mit Begründung). Viel besser als die Anforderung zu löschen — wenn jemand später dieselbe Idee hat, findet man die Entscheidung wieder."
+    },
+    {
+      "front": "Welche **Attribute** hat eine Anforderung in der Praxis typischerweise zusätzlich zum Kernsatz?",
+      "back": "- **ID** (referenzierbar) und Titel/Definition (der eine Satz)\n- **Priorität** (z. B. MoSCoW) — besser als Feld statt über muss/soll im Satz\n- **Lebenszyklus-Status** (Draft, in Review, approved, umgesetzt, verworfen, deprecated)\n- **Quelle/Stakeholder** (woher kommt sie? → Traceability upstream)\n- **Rationale** (Begründung der Entscheidung)\n- **Relationen**: abgeleitet aus Story X, getestet durch Test Y, conflicts with Z, depends on\n- **Akzeptanzkriterien**, Kommentare, Änderungshistorie, Risiko"
+    },
+    {
+      "front": "Welche Anforderungen stellt die Norm an **einzelne Anforderungen** (vgl. INVEST für Stories)?",
+      "back": "- **Necessary** — wirklich nötig\n- **Implementation-free** — keine Lösung vorwegnehmen (≈ Negotiable)\n- **Unambiguous** — eindeutig\n- **Complete** — in sich verständlich\n- **Singular** — genau eine Anforderung pro Artefakt (kleine Einheiten für Implementierung & Tests)\n- **Feasible** — machbar\n- **Traceable** — Quelle und Tests verfolgbar\n- **Verifiable** — testbar"
+    },
+    {
+      "front": "Was fordert die Norm für die **Gesamtheit** der Anforderungen (den Satz von Anforderungen)?",
+      "back": "- **Complete**: beschreibt zusammen das System vollständig — offene Punkte dürfen aber als *TBD/TBS/TBR* markiert werden (auch nach Norm erlaubt)\n- **Consistent**: einheitliche Formulierungen, keine Widersprüche (auf Systemlevel müssen Konflikte aufgelöst sein), keine Duplikate\n- **Affordable**: mit den Ressourcen leistbar\n- **Bounded**: begrenzt auf das, was die User Needs erfordern"
+    },
+    {
+      "front": "Was bedeutet **Traceability upstream vs. downstream** bei Anforderungen?",
+      "back": "- **Upstream (zur Quelle)**: Woher kommt die Anforderung? Welcher Stakeholder, welche User Story, welche Norm oder Risikobewertung fordert sie? — wichtig, wenn diskutiert wird, ob etwas wirklich nötig ist\n- **Downstream (zu den Tests)**: Welche Tests decken die Anforderung ab? Nachweis, dass sie umgesetzt wurde\n\nIdeal: von jedem Requirement zu seinen Tests navigieren können und umgekehrt."
+    },
+    {
+      "front": "Welche Anforderungsebenen unterscheidet die Requirements-Norm von Stakeholder-Wünschen bis zur Komponente?",
+      "back": "1. **Stakeholder Intentions** — geäußerte Bedürfnisse/Wünsche\n2. **Stakeholder Requirements** — strukturiert, Geschäfts- + Systemsicht (hier passen User Stories + Akzeptanzkriterien als Artefakt)\n3. **System Requirements** — aus Sicht des Systems, System als **Blackbox** (was, nicht wie); Input für den Architekturentwurf\n4. **Komponenten-Requirements** — pro Modul/Komponente; Output bzw. Teil des Architekturentwurfs"
+    },
+    {
+      "front": "Was besagt das **Twin-Peaks-Modell**?",
+      "back": "**Anforderungen und Architektur verfeinern sich gegenseitig und iterativ**: grobe Anforderungen → erster Architekturentwurf → Komponenten machen Anforderungen präziser → präzisere Anforderungen verändern die Architektur → …\n\nMan kann (und muss) nicht erst alle Anforderungen perfekt haben und dann die perfekte Architektur bauen."
+    },
+    {
+      "front": "Wie hängen im **V-Modell** die Anforderungsebenen mit den Teststufen zusammen?",
+      "back": "Linke Seite → rechte Seite:\n\n- **Komponentenanforderungen** → **Unit-Tests**\n- **Architektur** (Komponenten + Schnittstellen) → **Integrationstests**\n- **Systemanforderungen** → **Systemtests**\n- **Stakeholder-Anforderungen / User Stories + Akzeptanzkriterien** → **Validierung / Akzeptanztests** (mit echten Usern im Nutzungskontext, nicht automatisierbar)\n\nMerksatz: Was getestet werden soll, **sind** die Anforderungen — wer ernsthaft testet, braucht ernsthafte Anforderungen."
+    },
+    {
+      "front": "**Verifikation vs. Validierung** — was ist der Unterschied?",
+      "back": "- **Verifikation**: Erfüllt das Produkt die **Anforderungen**? (Unit-/Integrations-/Systemtests gegen die spezifizierten Requirements — „bauen wir das Produkt richtig?“)\n- **Validierung**: Erreichen die **User ihre Ziele** im echten Nutzungskontext? (Akzeptanztests/Usability-Evaluation mit Usern, auf Basis von Stories und Akzeptanzkriterien — „bauen wir das richtige Produkt?“)"
+    },
+    {
+      "front": "Wofür braucht man **User Stories UND Systemanforderungen** — was leistet jeweils das eine, was das andere?",
+      "back": "**Stories (Problemraum, Sicht der User):** Ziele/Bedürfnisse + Kontext bleiben erhalten, Priorisierung nach Mehrwert, demonstrierbare Arbeitspakete, Basis für Validierung.\n\n**Anforderungen (Lösungsraum, Sicht des Systems):** strukturierte Beschreibung von Funktionalität und Eigenschaften, Input für Architekturentwurf, Basis fürs Testen, dokumentierte Entscheidungen/Constraints.\n\nEmpfehlung der Vorlesung: mindestens mit Stories entwickeln; bei größeren Projekten zusätzlich System- und Komponentenanforderungen als „Leitplanken“."
+    },
+    {
+      "front": "Warum sollte man Sprints eher an **Stories** als an Komponenten oder einzelnen Anforderungen ausrichten?",
+      "back": "Wer Komponente für Komponente entwickelt (z. B. „Datenbanklayer komplett“), hat am Sprint-Ende **nichts Demonstrierbares** für die User — kein Feedback möglich.\n\nStories beschreiben Mehrwert → nach jeder Iteration lässt sich **Mehrwert demonstrieren** und Stakeholder-Feedback einholen. Das ist der Kern des Agilen. (Stichwort: vertikale Slices statt horizontaler Schichten.)"
+    },
+    {
+      "front": "Was ist ein **Kontextszenario** (nach Cooper), und was gehört hinein?",
+      "back": "Eine **erzählerische Geschichte der idealisierten Nutzung** des (noch nicht existierenden) Produkts durch eine Persona/einen Akteur — „Produktvision in konkret“.\n\nHinein gehören: **Ziel** und Akteur(e), die **Aktivitäten** zur Zielerreichung, das Endergebnis — und vor allem der **Nutzungskontext** (wo, wann, mit wem, Unterbrechungen, andere Produkte, Gedanken/Gefühle des Users) in der **Sprache der Fachdomäne**."
+    },
+    {
+      "front": "Was gehört **nicht** in ein Kontextszenario? („Pretend the interface is magic“)",
+      "back": "**Keine UI-/Interaktionsdetails**: kein „roter Button auf Screen X“, keine Widgets, keine Lösungsmechanik. Beschrieben wird, **was** der User mit dem Produkt erreicht, nicht **wie das UI es löst**.\n\nFachliche Konzepte (Story, Ticket, Backlog, Reifegrad) sind dagegen erwünscht — das sind Domänenbegriffe, keine UI-Details. Ist etwas noch unentschieden (z. B. ob es einen Ein/Aus-Schalter gibt), lässt man es im Szenario weg."
+    },
+    {
+      "front": "**Kontextszenario vs. Use Case** — worin unterscheiden sie sich?",
+      "back": "**Kontextszenario:** erzählerisch, ein idealisierter Ablauf ohne Verzweigungen, viel Kontext (Umgebung, Ziele, Wahrnehmung des Users), Problemraum, leicht verständlich.\n\n**Use Case:** strukturiert/formaler, will **alle** Szenarien (Happy Path + Alternativen/Fehlerfälle) zu einem Ziel erfassen, kaum Platz für Kontext und Benutzerwahrnehmung, beschreibt präzises Systemverhalten — schon Richtung Lösungsraum."
+    },
+    {
+      "front": "Wie ist ein **textueller Use Case nach Cockburn** aufgebaut?",
+      "back": "- **Titel** (enthält das Ziel, mit Handlungsverb) + für welches System/welche Komponente + **Level**\n- **Primärer Akteur** (wer stößt den Use Case an) + Ziel\n- **Vorbedingungen**\n- **Haupterfolgsszenario** (Happy Path): nummerierte, aktiv formulierte Schritte, < 10 Schritte, Akteur pro Schritt klar\n- **Erweiterungen/Alternativen**: „3a“ = Alternative a in Schritt 3, mit Bedingung + Schritten + Rücksprung („weiter bei 4“)\n- **Nachbedingungen** (Zustand bei Erfolg/Misserfolg)"
+    },
+    {
+      "front": "Was macht nach Cockburn einen **guten Use Case** aus — und was einen schlechten?",
+      "back": "**Gut:** Text (kein UML-Zwang), beschreibt Absichten mit **Verben**, kein UI-Detail (keine Buttons/Widgets), keine Datenformate, unter 10 Schritten, auf **Ziel-Level des Users**, leicht lesbar; Inhalt zählt, nicht die Form (nicht stur jede Vorlagen-Zelle füllen).\n\n**Schlecht:** UI-Klick-Beschreibungen, 30-Schritte-Hauptszenarien, alles gleich detailliert ausformulieren. Ein Use Case ist ein **Vertrag zwischen Stakeholdern über das Systemverhalten** — was drinsteht, gilt als vereinbart."
+    },
+    {
+      "front": "Welche **drei Level** von Use Cases unterscheidet Cockburn?",
+      "back": "- **Summary Level** („Kite/Cloud“): überblicksartige Zusammenfassung, was es mit der Software alles zu tun gibt\n- **User Goal Level** („Sea Level“): ein konkretes Benutzerziel — der nützlichste Level\n- **Subfunction Level** („Fish“): Unterfunktionen; lohnen sich v. a. dann als eigener Use Case, wenn sie in **mehreren** übergeordneten Use Cases vorkommen"
+    },
+    {
+      "front": "Use-Case-Beziehungen **«include» vs. «extend»** — was bedeuten sie?",
+      "back": "- **A includes B**: B wird im **Haupterfolgsszenario** von A **immer** durchlaufen (B beschreibt einen Pflicht-Teilablauf genauer)\n- **A extends B**: A beschreibt einen **optionalen/bedingten** Teilablauf von B — entspricht den Erweiterungen/Alternativen; Pfeilrichtung zeigt von der Erweiterung zum erweiterten Use Case\n\nMerkhilfe: include = zwingend (Happy Path), extend = nur unter bestimmter Bedingung."
+    },
+    {
+      "front": "Was kann ein **Use-Case-Diagramm** darstellen — und was prinzipiell nicht?",
+      "back": "**Kann:** welche Anwendungsfälle es gibt, welche Akteure sie auslösen, Systemgrenze, welche Use Cases Teilabläufe anderer sind (include/extend), Generalisierung.\n\n**Kann nicht:** **Reihenfolgen/Abläufe** — man sieht nicht, in welchem Schritt ein Sub-Use-Case ausgeführt wird. Einen einzelnen Use Case (Ablauf) kann man damit also nicht modellieren — dafür Sequenz- oder Aktivitätsdiagramm (oder Text)."
+    },
+    {
+      "front": "Welche Diagrammform wählt man für einen **Ablauf ohne Verzweigungen** und welche bei **vielen Verzweigungen**?",
+      "back": "- Einzelnes Szenario ohne Verzweigungen (z. B. Happy Path): **Sequenzdiagramm** — pro Akteur/System eine Lebenslinie, Nachrichten als Pfeile; sehr klar, wer was macht\n- Viele Bedingungen/Verzweigungen: **Aktivitäts-/Flussdiagramm** (Verzweigungen als Knoten)\n\nPraktisch: „Diagram as Text“ (Mermaid/PlantUML) in Markdown — versionierbar, mit Text mischbar, von KI les- und erzeugbar."
+    },
+    {
+      "front": "**User Story vs. Use Case** — die beiden werden oft verwechselt. Grenze sie ab.",
+      "back": "- **User Story**: 1 Satz (Rolle, Aktivität, Ziel) + Akzeptanzkriterien; Problemraum; mentaler Anker für Gespräche; Priorisierung nach Mehrwert\n- **Use Case**: strukturierte Beschreibung **aller Abläufe/Szenarien** zur Erreichung eines Ziels (Happy Path + Alternativen) als Dialog Benutzer ↔ System; Richtung Lösungsraum/Spezifikation\n\nMapping ist nicht 1:1: nicht jede Story braucht einen Use Case; manchmal ergeben mehrere Stories zusammen einen Use Case."
+    },
+    {
+      "front": "Was beschreibt der **Problemraum**, was der **Lösungsraum** — und welche Artefakte gehören wohin?",
+      "back": "**Problemraum**: Bedürfnisse, Ziele, Denkwelt der User — unabhängig von unserer Lösung. Artefakte: Stakeholder, Benutzerrollen, Personas, Kontextszenarien, User Stories + Akzeptanzkriterien. Auch die **Validierung** gehört hierher.\n\n**Lösungsraum**: konzipieren, spezifizieren, implementieren, **verifizieren**. Artefakte: System-/Komponentenanforderungen, Architektur, UI-Spezifikationen; Use Cases stehen an der Grenze (schon eher Lösungsraum)."
+    },
+    {
+      "front": "Woran erkennst du, dass eine „User Story“ **den Lösungsraum statt des Problemraums** beschreibt — und wie behebst du das?",
+      "back": "Symptome: technische Mechanismen im Narrativ („nach X **filtern**“, „Eingabefelder untereinander angeordnet“, konkrete UI-Elemente, Farben), kein Ziel/Bedürfnis erkennbar.\n\nBeheben: das **dahinterliegende Bedürfnis** formulieren (Was will die Person **bewirken**?), Lösungsdetails streichen oder in Akzeptanzkriterien/offene Punkte verschieben. Beispiel: statt „alle Felder untereinander“ → „ohne Navigieren und Klicken schreiben können, um im Schreibfluss zu bleiben“."
+    },
+    {
+      "front": "Welche **Ermittlungstechniken** (Requirements Elicitation) gibt es?",
+      "back": "- **Befragung**: Interview (tief, qualitativ) vs. Fragebogen (viele Stakeholder, aber nur vorgeplante Themen)\n- **Kreativitätstechniken**: Workshops/Brainstorming mit mehreren Stakeholdern (auch Prioritäten ausdiskutieren)\n- **Beobachtung**: Feldbeobachtung/Job Shadowing (zusehen + fragen), Apprenticing (Rolle selbst übernehmen)\n- **Dokumente/Systeme**: Verträge, Normen, Manuals, Konkurrenz-/Vorgängersysteme („Systemarchäologie“)\n\nMeist muss man **mehrere Techniken kombinieren**."
+    },
+    {
+      "front": "Welche **drei Wissensarten** haben Stakeholder, und was bedeutet das für die Ermittlung?",
+      "back": "- **Bewusstes Wissen**: kann direkt geäußert werden → einfache Fragen reichen\n- **Unterbewusstes Wissen**: nicht sofort parat, aber durch **richtiges Fragen** (Beispiele, Nachhaken) erschließbar\n- **Unbewusstes Wissen**: kann die Person selbst nicht durch Nachdenken erschließen → braucht Beobachtung o. Ä.\n\nDeshalb reicht „einfach fragen“ oft nicht — Technik nach Wissensart und Detailgrad wählen (feine Details → im Kontext beobachten)."
+    },
+    {
+      "front": "**Exploratives vs. konfirmatorisches (Validierungs-)Interview** — was ist der Unterschied?",
+      "back": "- **Explorativ**: erkunden — Bedürfnisse, Probleme und Kontext verstehen, wenn man noch nicht weiß, was man alles nicht weiß. Leitfragen vorbereiten, aber dynamisch dem Gespräch folgen; Folgefragen liefern die wertvollsten Informationen\n- **Konfirmatorisch/Validierung**: etwas Gegebenes (Vision, Anforderungen, Prototyp) von Nutzern **bestätigen/prüfen** lassen: „Wenn wir X hätten — wie viel brächte Ihnen das wirklich?“"
+    },
+    {
+      "front": "Nenne typische **Interview-Fallen** und wie man sie vermeidet.",
+      "back": "- **Lösungsfalle**: Stakeholder liefern Lösungsvorschläge, keine Bedürfnisse — hinterfragen: „Was könnten Sie dann, was heute nicht geht?“ (5 Whys)\n- **Bestätigungsfalle**: suggestiv fragen, bis das erwartete „Ja“ kommt — wertlos; neutral fragen\n- **Verzerrung durch Altsysteme**: Nutzer denken in den Prozessen des alten Systems — Blick weiten, nicht alles übernehmen\n- Außerdem: nicht heimlich/unabgesprochen aufzeichnen (verändert Antworten), nicht früh urteilen (suspend judgment)"
+    },
+    {
+      "front": "Was tun gegen die **Asymmetrie der Expertise** im Interview mit Fachexperten?",
+      "back": "- **Vorbereitung**: Fachsprache und Grundlagen vorher aneignen\n- **Teachback**: Gehörtes in eigenen Worten wiederholen („Habe ich richtig verstanden: erst …, dann …?“) — zeigt Respekt und provoziert Korrekturen\n- **Beispiele erzwingen**: „Können Sie ein Beispiel nennen?“\n- Ankündigen, dass man auch scheinbar Selbstverständliches fragt\n- Nicht nur nicken und mitschreiben, sondern unterbrechen/nachhaken, sobald man nicht mehr folgt"
+    },
+    {
+      "front": "**5 Whys vs. Laddering Up** — zwei Nachfragetechniken. Wofür je?",
+      "back": "- **5 Whys** (Toyota/Ohno, Lean): wiederholt „Warum?“ fragen, um vom Symptom zum **Kernproblem/zur Ursache** vorzudringen (dosiert einsetzen, sonst nervt es)\n- **Laddering Up** (Konsumentenforschung): von konkreten Eigenschaften zu den **persönlichen Beweggründen/Motivationen** aufsteigen („Warum ist Ihnen das wichtig?“) — versteht die echten Ziele hinter Vorlieben"
+    },
+    {
+      "front": "Warum liefern Interviews **keine repräsentativen** Ergebnisse, und wie geht man damit um?",
+      "back": "**Small N**: wenige Gesprächspartner, jedes Interview eher eine Fallstudie — tiefe **qualitative Einsichten**, keine statistischen Muster.\n\nUmgang: Aussagen erfahrener Experten ernster nehmen, wenn sie **mehrfach betont** und plastisch begründet werden; durch **unabhängige zweite Expertenmeinung** und andere Quellen (Leitlinien, Publikationen) absichern. Lieber ein tiefes Interview mit echter Fachkompetenz als viele oberflächliche."
+    },
+    {
+      "front": "Wen fragt man was? Warum sollte man **nicht jedem Stakeholder jede Frage** stellen?",
+      "back": "Stakeholder haben unterschiedliche **Expertise und Perspektiven** — im echten Leben (und in der Klausur): erst überlegen, **wer sich um was kümmert** und wer welche Frage kompetent beantworten kann.\n\nBeispiele: Detailfragen zum OP-Ablauf → wer im OP steht; Therapie-/Programmierfragen → Neurologe; Business-/Visionsfragen → Entscheider. Fragen an die falsche Person liefern keine oder irreführende Antworten und kosten Vertrauen."
+    },
+    {
+      "front": "Was ist ein **MVP** (nach Ries, Lean Startup) — und was ist es ausdrücklich NICHT?",
+      "back": "Das **kleinstmögliche Produkt/Experiment, um eine Hypothese mit echtem Kundenfeedback zu prüfen** (Build → Measure → Learn).\n\n- Es ist ein **Lernexperiment**, keine Produktversion\n- Muss nicht marktreif sein, muss nicht alle Basisfeatures erfüllen, muss nicht mal Software sein\n- NICHT: „unser erstes Release“ oder „der minimale verkaufbare Funktionsumfang“ (das ist das MMP)\n\nZu jedem MVP gehört eine explizite **Hypothese**, die es prüft."
+    },
+    {
+      "front": "Nenne drei klassische **MVP-Muster** mit Beispiel.",
+      "back": "- **Wizard of Oz**: Produkt wird gemockt, ein Mensch erledigt die Arbeit im Hintergrund — *Zappos*: Schuhfotos online stellen, prüfen ob jemand online Schuhe kauft, bevor es Lager/Shop gibt\n- **Concierge**: Dienstleistung erst manuell für wenige Kunden erbringen — *Airbnb*: die eigene Wohnung inserieren\n- **Landing Page / Erklärvideo**: Interesse messen, bevor gebaut wird — *Dropbox*: Video über nahtlose Dateisynchronisation, Anmeldungen zählen"
+    },
+    {
+      "front": "Wie formuliert man eine gute **MVP-Hypothese**? Gib ein Beispiel aus dem DevOS-Kontext.",
+      "back": "Eine **riskante, prüfbare Annahme**, an der das Produkt hängt — nicht „User wollen Stories erstellen“ (Basisfeature, kann Jira auch).\n\nBeispiele: „POs und Devs sind bereit, Stories und Tickets als getrennte Entitäten zu pflegen“, „Tickets in Git erzeugen keine nervigen Merge-Konflikte“, „Mit der Story Map findet der PO Planungslücken schneller als mit einer gefilterten Liste“. Dann das kleinste Experiment bauen, das genau diese Annahme misst."
+    },
+    {
+      "front": "Was ist ein **MMP** (Minimal Marketable Product), und wie hängt es mit MVP und Product-Market-Fit zusammen?",
+      "back": "**MMP** (Pichler): das kleinste Produkt mit **echtem Marktwert**, das verkauft werden kann — das kleinste Feature-Set, das die Bedürfnisse der **initialen Nutzer** (Early Adopters, nicht aller!) adressiert.\n\nWeg: mehrere **MVPs** (Lernexperimente) → **MMP** (erster echter Launch, schnell Feedback vom Markt) → **Product-Market-Fit** (nachweislich genug zahlende Kunden).\n\nNach Kano: alle Basisfaktoren **für die Zielgruppe** + mindestens ein Begeisterungs-/Leistungsfaktor als Kaufgrund."
+    },
+    {
+      "front": "Was ist ein **Walking Skeleton**? Nenne beide Deutungen.",
+      "back": "- **Funktional** (Patton/Agile Alliance): „bare bones, but usable“ — der **dünnste Slice durch die Story Map**, mit dem der User sein Ziel Ende-zu-Ende erreichen kann; nichts ist schön, aber alles greift ineinander; Basis zum Aufbauen\n- **Technisch** (Cockburn): minimale Implementierung **durch alle Architekturschichten**, um ein echtes Feature Ende-zu-Ende zu zeigen (vertikaler Slice)"
+    },
+    {
+      "front": "**Kano-Modell**: Erkläre Basis-, Leistungs- und Begeisterungsmerkmale.",
+      "back": "- **Basismerkmale**: implizite Muss-Kriterien; gelten als selbstverständlich — vorhanden: kaum bemerkt (Indifferenz), fehlend: klar unzufrieden. Mit Basisfeatures allein macht man niemanden glücklich\n- **Leistungsmerkmale**: Zufriedenheit steigt ~proportional zur Erfüllung (z. B. UX-Qualität, Geschwindigkeit)\n- **Begeisterungsmerkmale**: unerwartet; fehlend: keine Unzufriedenheit, vorhanden: überproportionale Begeisterung — nur damit erreicht man echte Zufriedenheit; wenige pro Release genügen"
+    },
+    {
+      "front": "Kano in der Praxis: Welche zwei Dinge muss man bei der Einordnung von Features unbedingt beachten?",
+      "back": "1. **Pro Zielgruppe getrennt** betrachten/auswerten: „1-Klick-Ticket aus Story“ begeistert den PO, ist den Devs egal; „Tickets in VS Code“ umgekehrt. Umfragen nie über Zielgruppen mischen\n2. **Zeitliche Wanderung**: heutige Begeisterungsmerkmale werden morgen Leistungs- und übermorgen Basismerkmale (Konkurrenz zieht nach, Erwartungen steigen)"
+    },
+    {
+      "front": "Wie findet man per **Kano-Befragung** heraus, welcher Merkmalstyp ein Feature ist?",
+      "back": "**Bipolar fragen** — jedes Feature zweimal:\n\n- funktional: „Was würden Sie sagen, wenn das Produkt X **hätte**?“\n- dysfunktional: „…wenn es X **nicht hätte**?“\n\nAntwort-Kombination klassifiziert: „setze ich voraus“ + „würde mich sehr stören“ → **Basismerkmal**; „würde mich sehr freuen“ + „würde mich sehr stören“ → **Leistungsmerkmal**; „würde mich sehr freuen“ + „egal“ → **Begeisterungsmerkmal**."
+    },
+    {
+      "front": "Wie lautet die **Elevator-Pitch-Schablone nach Moore** für eine Produktvision?",
+      "back": "**For** ⟨Zielgruppe⟩, **who** ⟨Bedürfnis/Problem⟩, **the** ⟨Produktname⟩ **is a** ⟨Produktkategorie⟩ **that** ⟨Key Benefit / zentrales Versprechen⟩. **Unlike** ⟨Konkurrenz/Alternative⟩, ⟨unser Differenzierungsmerkmal/USP⟩.\n\nZweck: in einem Satz fokussieren — Zielgruppe, Bedürfnis, Kategorie, Nutzenversprechen und USP müssen benennbar sein. Fehlt eines davon (oder steht dort eine Lösung statt eines Nutzens), ist der Pitch unvollständig."
+    },
+    {
+      "front": "Woran erkennt man eine **gute Produktvision**, und wozu dient sie im Alltag?",
+      "back": "- Sie ist ein **Artefakt** (aufschreibbar, hinterfragbar, testbar), kein Motivationsposter\n- Sie ist **stabil** (ändert sich kaum), während Strategie und Produkt sich ändern\n- Sie wird **bei Konflikten wirklich benutzt**: als Filter für relevante vs. irrelevante Ideen („hilft das unserer Vision?“)\n- Ihre Behauptungen sollte man **belegen/testen** können — sonst braucht es eine bessere Vision\n- Sie hat oft technische Konsequenzen (Fokus bestimmt Technologieentscheidungen)"
+    },
+    {
+      "front": "Was ist ein **Vision Board** (nach Pichler)?",
+      "back": "Eine Schablone, um die Produktvision strukturiert zu erarbeiten. Felder (vereinfacht):\n\n- **Zielgruppe** (wer sind die Nutzer/Kunden?)\n- **Bedürfnisse** (welche Probleme/Needs adressieren wir?)\n- **Produkt** (was ist es, Schlüsselmerkmale/Lösungsansätze)\n- (Business-)**Ziele/Wert**\n\nWichtig: Bedürfnisse als echte Bedürfnisse formulieren, nicht als Featureliste."
+    },
+    {
+      "front": "Es gibt **zwei Gründe**, warum ein Artefakt (z. B. eine Story) „zu groß“ sein kann — welche, und was ist jeweils die Antwort darauf?",
+      "back": "1. **Zu unkonkret**: die Aussage stimmt, aber es ist unklar, welche Aktivitäten gemeint sind („aussagekräftiges Reporting erhalten“) → **Verfeinerung**: Akzeptanzkriterien hinzufügen, sprachlich präzisieren, in konkretere Stories/Anforderungen aufteilen\n2. **Zu großer Umfang** (konkret, aber z. B. 20 Akzeptanzkriterien, passt nicht in einen Sprint) → **Splitting/Slicing**: Arbeitsorganisation, in Inkrementen abarbeiten"
+    },
+    {
+      "front": "Welche **Strukturierungsebenen oberhalb von Stories** sind üblich?",
+      "back": "Meist **zwei Ebenen**, Begriffe variieren stark:\n\n- XP-Literatur: **Theme** (größer) > **Epic** > Story\n- Jira/Atlassian: Initiative > Feature\n- Pichler: Goals > Features\n- SAFe (skaliert): drei Ebenen\n\nWichtig ist nicht der Name, sondern dass das ganze Team dieselbe Definition benutzt. Kriterium fürs Herunterbrechen: Lassen sich Teile mit **eigenem Ziel unabhängig beschreiben**? Dann ist es eher ein Epic mit mehreren Stories."
+    },
+    {
+      "front": "**Story Splitting** (Lawrence): Wann splittet man, und was ist die Faustregel für die Maximalgröße?",
+      "back": "Wenn eine Story konkret und gut ist, aber **zu groß für einen Sprint** — man will kurze Feedback-Intervalle.\n\nFaustregel: Eine Story sollte höchstens **¼ bis ⅒ der Team-Velocity** eines Sprints groß sein.\n\nZiel des Splittings: kleine **vertikale Slices**, wobei die entstehenden Stories weiterhin die Qualitätskriterien (Mehrwert, Testbarkeit, Feedback möglich) erfüllen."
+    },
+    {
+      "front": "Splitting-Muster **„Workflow-Schritte“**: Wie splittet man eine Story, die viele Workflow-Schritte enthält — und warum NICHT Schritt für Schritt?",
+      "back": "Nicht Schritt 1, dann Schritt 2, … — denn der **Mehrwert wird meist erst beim letzten Schritt sichtbar** (z. B. „Artikel ist live auf der Website“). Ein Review-Schritt allein ist nicht demonstrierbar.\n\nStattdessen: **ersten und letzten Schritt zuerst** (dünner Durchstich, der das Ziel erreicht), die **Zwischenschritte** (Reviews, Approvals, Staging) **nachgelagert** ergänzen.\n\nWeiteres Muster: **Variationen der Geschäftslogik** — erst die einfache Variante, dann die komplexen Fälle."
+    },
+    {
+      "front": "Welche **INVEST-Kriterien leiden** typischerweise beim Story Splitting?",
+      "back": "- **Independent**: kleine Stories hängen oft voneinander ab (Basis-Story + Zusatz-Stories), sind einzeln kaum erklärbar oder bringen allein nichts\n- **Estimable**: unabhängige Schätzung wird schwieriger, weil der Aufwand vom Implementierungsstand/der Reihenfolge abhängt\n\nDas ist der Preis für kleine, schnell umsetzbare Einheiten — beim Slicing löst man es, indem man Bezug auf den Entwicklungsstand ausdrücklich erlaubt."
+    },
+    {
+      "front": "**Splitting vs. Slicing** — was ist der Unterschied?",
+      "back": "**Splitting**: Stories → kleinere **Stories**; man versucht, die INVEST-Kriterien einzuhalten und macht keine Annahmen über den Entwicklungsstand.\n\n**Slicing**: Zuschneiden von **Arbeitspaketen** (Tickets) für die Umsetzung. Ein Slice muss keine Story sein („setze Akzeptanzkriterien 1–4 dieser Story um“). Man **darf** sich auf den Entwicklungsstand beziehen („X existiert schon, wir ergänzen Y“) und realistisch schätzen. Independent gilt nur noch innerhalb eines Sprints (abhängige Tickets in aufeinanderfolgende Sprints legen). Negotiable ist nicht mehr gefordert — vor der Implementierung will man ein gemeinsames Verständnis."
+    },
+    {
+      "front": "Welche **Qualitätskriterien** muss ein guter **Slice** (Arbeitspaket) erfüllen?",
+      "back": "- **Klein genug** für die Umsetzung im gewünschten Zeitraum (Sprint/Feedback-Intervall)\n- **Abschätzbar**\n- **Funktionierend und testbar** (ausführbare Software)\n- **Mehrwert demonstrierbar** und **Feedback generierbar**\n\nDas Feedback-Kriterium ist das durchgehende agile Thema: Jedes Arbeitspaket soll nach Abschluss Feedback von Stakeholdern ermöglichen."
+    },
+    {
+      "front": "Was ist ein **vertikaler Slice**, und warum sind horizontale Slices meist schlecht?",
+      "back": "Ein Arbeitspaket, das **durch alle Architekturschichten** geht (UI + Logik + Persistenz/Hardware), sodass ein echtes Stück Funktionalität Ende-zu-Ende läuft.\n\n**Horizontale** Slices (nur Datenbanklayer, nur Hardware-Anbindung, nur UI) erfüllen die Slice-Kriterien meist nicht: nichts Demonstrierbares, kein Mehrwert, kein Feedback möglich („grüne Tests“ überzeugen keinen Stakeholder). Bonus: Wenn vertikale Slices leichtfallen, ist das ein gutes Zeichen für die Architektur."
+    },
+    {
+      "front": "Warum sollte man **Arbeitsorganisation (Tickets) und Spezifikation (Stories/Anforderungen) trennen**?",
+      "back": "Häufiges Antipattern: Alles (Story, Akzeptanzkriterien, Begründung) steht nur im **Ticket** — nach der Implementierung verschwindet es unstrukturiert im Ticket-Archiv und wird nie wieder gefunden.\n\nBesser: Stories/Spezifikationen als **bleibende Doku** separat pflegen; Tickets referenzieren sie nur und beschreiben das Arbeitspaket („setze Teil X von Story Y um“). Produkt-Backlog kann gemischt sein, im Sprint-Backlog liegen konkrete Tickets."
+    },
+    {
+      "front": "Nenne die **vier Werte des Agilen Manifests**.",
+      "back": "Wichtiger ist jeweils das Linke:\n\n1. **Individuen und Interaktionen** über Prozesse und Werkzeuge\n2. **Funktionierende Software** über umfassende Dokumentation\n3. **Zusammenarbeit mit dem Kunden** über Vertragsverhandlung\n4. **Reagieren auf Veränderung** über das Befolgen eines Plans\n\nDazu 12 Prinzipien, u. a.: Kundenzufriedenheit durch frühe, kontinuierliche Auslieferung; häufig liefern; Business-Leute und Entwickler arbeiten eng zusammen; Face-to-Face-Kommunikation."
+    },
+    {
+      "front": "Woran erkennt man, ob ein Prozess **wirklich agil** ist? (Das schärfste Kriterium)",
+      "back": "**Regelmäßiges echtes Feedback von echten Betroffenen** (Stakeholdern/Usern) — dafür sind kurze Iterationen und häufiges Ausliefern überhaupt da.\n\nKlassisches Gegenbeispiel („teilweise agil“): Requirements → *iterative Entwicklung* → Test → Release. Sieht iterativ aus, ist aber **nicht agil**: keine Zwischenreleases, die Feedback-Schleife kommt erst ganz am Ende. Iterieren ohne Feedback ist nicht agil."
+    },
+    {
+      "front": "Nenne Fragen aus der „agilen Checkliste“ der Vorlesung, mit denen man die Agilität eines Teams beurteilen kann.",
+      "back": "- Wie viel denken wir uns aus, **ohne die Bedürfnisse der User zu kennen**?\n- Wie häufig holen wir **tatsächlich Feedback** von Stakeholdern/Usern ein — und was machen wir damit?\n- Was tun wir mit **unklaren Features**: Experimente (Risiko zuerst!) oder aussitzen?\n- Was tun wir, wenn geplante Features **nicht den Bedürfnissen entsprechen**?\n- Prüfen wir regelmäßig, wo unsere **Arbeitsweise** verbesserungswürdig ist (Retrospektive)?"
+    },
+    {
+      "front": "Welchen wirtschaftlichen Vorteil verspricht agiles Vorgehen gegenüber traditionellem (Business-Value-Kurve)?",
+      "back": "Der **Business Value steigt früh**: Man liefert schnell aus und priorisiert das mit dem **größten Mehrwert zuerst**. Beim traditionellen Vorgehen kommt der Wert erst am Ende (Big-Bang-Release).\n\nFolge: Man kann ein Projekt **beenden, sobald der meiste Mehrwert geliefert ist**, statt Ressourcen an Restfeatures zu verschwenden — und Fehlannahmen fallen früh auf statt nach zwei Jahren."
+    },
+    {
+      "front": "Welche **drei Rollen** hat Scrum, und was verantwortet jede?",
+      "back": "- **Entwicklungsteam**: liefert das fertige **Produktinkrement** im Sinne der Definition of Done; organisiert sich selbst\n- **Product Owner**: verantwortet das **Product Backlog** und die Priorisierung; sorgt dafür, dass das Team nichts Unnötiges baut; versteht und repräsentiert die Anforderungen\n- **Scrum Master**: stellt sicher, dass der **Prozess funktioniert**, beseitigt Hindernisse, unterstützt Team und PO\n\nNiemand davon ist „Chef“ — auch wenn der PO die Priorisierung verantwortet."
+    },
+    {
+      "front": "Welche **Events und Artefakte** hat ein Scrum-Sprint, und wozu dient jedes Event?",
+      "back": "Artefakte: **Product Backlog** → **Sprint Backlog** → **Produktinkrement** (+ Definition of Done).\n\n- **Sprint Planning**: Was wollen/können wir schaffen? Ziele stabilisieren, Abhängigkeiten auflösen; hier werden auch die Story-„Conversations“ ans Team vermittelt\n- **Daily**: kurze Abstimmung\n- **Sprint Review**: Fortschritt sichtbar machen, **Feedback** von Stakeholdern und Entwicklern einholen\n- **Retrospektive**: den Prozess selbst inspizieren und anpassen\n\nDer laufende Sprint ist **unantastbar** (stabile Ziele). Was der PO im Planning nicht erklären kann, kommt nicht in den Sprint."
+    },
+    {
+      "front": "**Definition of Done vs. Definition of Ready** — was ist der Unterschied?",
+      "back": "- **Definition of Done**: teamweite Vereinbarung, wann ein Arbeitsergebnis **fertig** ist (implementiert, getestet, dokumentiert, …) — Grundlage für das Produktinkrement\n- **Definition of Ready**: Kriterien, wann eine Story **reif genug für die Umsetzung** ist (verständlich, Akzeptanzkriterien vorhanden, klein genug, …) — in DevOS als „Reifegrad Ready“ modelliert, ggf. mit Review-Prozess, bevor Tickets erzeugt werden"
+    },
+    {
+      "front": "Was ist eine **Story Map**, und welches Problem löst sie gegenüber einem flachen Backlog?",
+      "back": "Eine 2D-Anordnung der Stories: **x-Achse = narrativer Fluss** (Aktivitäten/Schritte der User entlang ihrer Journey), **y-Achse = Detail/Priorität**; horizontale Schnitte bilden **Releases**.\n\nSie löst das Problem, dass man **zwei Sichten** braucht: die **strukturelle Sicht** (was gehört fachlich zusammen, ist das Gesamtbild vollständig?) und die **Priorisierungssicht** (was kommt in welches Release?). Eine flache Liste von 100 Stories leistet das nicht; man sieht in der Map sofort Lücken und ob ein Release-Schnitt die Nutzerziele Ende-zu-Ende abdeckt."
+    },
+    {
+      "front": "**Projektrisiko vs. Produkt-/Systemrisiko** — unterscheide die beiden.",
+      "back": "- **Projektrisiko**: Schaden für den **Hersteller** — Zeit, Budget, Scope, „schaffen wir das Projekt?“. Hat Upside und Downside (Risiko eingehen kann sich lohnen). Behandlung ist Best Practice, subjektiv/erfahrungsbasiert; endet mit dem Projekt\n- **Produktrisiko**: Schäden **durch die Verwendung des Produkts** (körperlich, finanziell, …) — „dürfen wir das verantworten?“. Nur Downside; bei regulierten Produkten (Medizin, Auto, Luftfahrt) **normativ vorgeschrieben**, datenbasiert, gilt bis zum **Lebensende des Produkts** (auch nach Projektende!)"
+    },
+    {
+      "front": "Wie lautet die **Grundkette des Risikomanagements**?",
+      "back": "1. **Identifizieren** (systematisch!)\n2. **Analysieren/Bewerten** (wie schlimm, wie wahrscheinlich)\n3. **Behandeln** (vermeiden, mindern, übertragen, akzeptieren)\n4. **Überwachen** (Risikoregister, tatsächliche Häufigkeiten erfassen, bei Bedarf neu bewerten; Trigger definieren)\n\nEin Risiko, das nicht identifiziert wird, kann auch nicht behandelt werden."
+    },
+    {
+      "front": "Welche **drei Methodenfamilien zur Risikoidentifikation** gibt es?",
+      "back": "- **Checklisten-basiert**: Kataloge bekannter Risikoquellen der Branche — schneller Einstieg, kein Vorwissen nötig, aber projektspezifische Risiken fehlen\n- **Struktur-zerlegend**: jedes Element der Struktur systematisch untersuchen — Work Breakdown Structure (Projekt) bzw. Systemarchitektur/Komponenten (Produkt, → FMEA); findet nur, was sich der Struktur zuordnen lässt\n- **Leitwort-basiert** (HAZOP): pro Komponente Leitworte durchgehen: **kein / mehr / weniger / auch / rückwärts** — hilft, an Fälle zu denken, die man sonst vergisst"
+    },
+    {
+      "front": "Wie **bewertet** man ein Risiko im einfachsten Fall, und wie geht man mit der Risikomatrix um?",
+      "back": "**Risiko(-Exposure) = Eintrittswahrscheinlichkeit × Schadenshöhe** (zwei getrennt bewertete Größen, z. B. je niedrig/mittel/hoch).\n\nMatrix: **grüne** Felder (unwahrscheinlich und/oder geringer Schaden) → Risiko bewusst **akzeptieren**; Diagonale → genauer ansehen; **rote** Felder (wahrscheinlich + schwer) → aktiv **behandeln**.\n\nWichtig: Nicht jedes identifizierte Risiko führt zu Arbeit — aber Akzeptieren ist eine **bewusste, dokumentierte Entscheidung**, kein Ignorieren."
+    },
+    {
+      "front": "Was ist die **FMEA**, und wie berechnet sich die **Risikoprioritätszahl (RPZ)**?",
+      "back": "**Failure Mode and Effects Analysis**: pro Komponente systematisch erfassen: **Fehlerart** (was kann fehlschlagen), **Folge**, **Ursache(n)** (eine Fehlerart kann mehrere Ursachen haben → mehrere Zeilen).\n\nBewertung: **RPZ = Auftreten (Wahrscheinlichkeit) × Schwere/Bedeutung × Entdeckung** (hohe Zahl = schwer zu entdecken). Je höher die RPZ, desto dringender die Behandlung; ab einer begründeten Schwelle wird behandelt.\n\nErgänzend: **FTA (Fault Tree Analysis)** — Baum von Ursachen mit UND/ODER-Verknüpfungen zu einem Top-Ereignis."
+    },
+    {
+      "front": "Welche **vier Behandlungsoptionen** gibt es für ein Risiko?",
+      "back": "1. **Vermeiden**: die riskante Funktionalität streichen — Risiko weg, aber Nutzen geschmälert\n2. **Mindern** (häufigster Fall): zusätzliche Maßnahmen bauen (Watchdog, Plausibilitätschecks, Warnungen) → Neubewertung: RPZ nach Minderung unter der Schwelle?\n3. **Übertragen**: z. B. Versicherung (v. a. für Projektrisiken — Regulierer beeindruckt das nicht)\n4. **Akzeptieren**: bewusste, begründete Entscheidung bei niedriger Bewertung"
+    },
+    {
+      "front": "Wie wird aus einer **Risikominderungsmaßnahme** eine Anforderung? (Beispiel Neurostimulation)",
+      "back": "Jede Minderungsmaßnahme ist meist eine Funktion → dazu braucht es eine **(Schutz-)Anforderung**, rückverfolgbar zum Risiko, und den **Nachweis der Wirksamkeit** (Validierung).\n\nBeispiel: Zu hohe Amplitude/Pulsbreite → Ladungsdichte über Grenzwert → **Gewebeschädigung**. Anforderungen: Der Clinician Programmer muss aus Kontaktgröße, Amplitude und Pulsbreite die **Ladungsdichte berechnen**; sobald der Grenzwert (30 µC/cm²) überschritten würde, muss er **warnen und eine Bestätigung des Users einfordern**."
+    },
+    {
+      "front": "Was regeln **Normen** bei (Medizin-)Software — und was regeln sie NICHT?",
+      "back": "Normen fordern i. d. R. **keinen bestimmten Funktionsumfang** und schreiben **kein Vorgehensmodell** vor. Sie fordern **Prozesse und Nachweise**: dass man weiß, warum man etwas entwickelt (Quelle der Anforderung), Traceability Anforderung ↔ Architektur ↔ Tests, Risikomanagement, dokumentierte Architektur/Schnittstellen, Umgang mit Fremdsoftware (SOUP), Nachweis der Gebrauchstauglichkeit (Usability-Validierung mit echten Usern).\n\nJe höher die Risikoklasse (kein Schaden / Schaden / schwerer Schaden bis Tod möglich), desto mehr Dokumentations- und Nachweispflichten."
+    },
+    {
+      "front": "Was ist ein **Stakeholder** (Definition), und wovon ist der Begriff abzugrenzen?",
+      "back": "Eine **Person oder Organisation, die Einfluss auf die Anforderungen des Systems hat oder auf die das System Auswirkungen hat**.\n\nAbgrenzung: Stakeholder ≠ Auftraggeber und Stakeholder ≠ Nutzer — Nutzer sind eine (besonders wichtige) Teilmenge; auch Betreiber, Entscheider, Regulierungsbehörden, Support usw. sind Stakeholder."
+    },
+    {
+      "front": "Wie ist ein **Systemkontextdiagramm** aufgebaut (Zonen und Grenzen), und wozu dient die „irrelevante Umgebung“?",
+      "back": "**Drei Zonen, zwei Grenzen**:\n\n1. **System** (innen) — |Systemgrenze| —\n2. **Systemkontext**: alles, was Anforderungen beeinflusst (Menschen/Rollen, Nachbarsysteme, Prozesse, Regulatorik) — |Kontextgrenze| —\n3. **Irrelevante Umgebung**: bewusst als irrelevant deklarierte Systeme/Rollen\n\nDie irrelevante Umgebung **explizit einzuzeichnen** dokumentiert Entscheidungen („dafür designen/integrieren wir nicht“) und schützt gegen **Scope Creep**."
+    },
+    {
+      "front": "**Scope vs. Systemgrenze** — warum ist das nicht dasselbe?",
+      "back": "**Scope** bezieht sich auf das **Projekt**: alles, was wir tun müssen — dazu gehören auch Dinge außerhalb des Produkts (Schulungen, Doku, Migration, Betrieb …). Außerhalb des Scope = was wir **nicht** tun.\n\nDie **Systemgrenze** trennt nur das zu bauende **System** von seinem Kontext. Der Projekt-Scope ist also i. d. R. größer als das, was innerhalb der Systemgrenze liegt."
+    },
+    {
+      "front": "Übungsprojekt: Was sind die **vier Stimulationsparameter**, und was bezeichnen **CP** und **IPG**?",
+      "back": "Die vier Parameter der Neurostimulation: **Amplitude, Frequenz, Pulsbreite, Polarität** (pro Lead/Kontakt einstellbar) — im Glossar zusammengefasst als **Stimulationsparameter** (konsistent so verwenden!).\n\n- **CP** = Clinician Programmer: die Software/das Gerät, mit dem Kliniker (z. B. Neurologin) die Stimulation programmieren\n- **IPG** = Implantierbarer Pulsgenerator: das Implantat, das die Stimulation abgibt\n\nSicherheitsrelevant: Amplitude und Pulsbreite bestimmen die **Ladungsdichte** (Gewebeschädigung); zu hohe Frequenz allein schädigt kein Gewebe."
+    }
+  ]
+}
