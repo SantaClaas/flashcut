@@ -52,11 +52,6 @@ html {
 
 body {
   @apply bg-stone-100 text-stone-900 antialiased dark:bg-stone-950 dark:text-stone-100;
-
-  /* viewport-fit=cover (index.html) lets the page extend under the iOS status
-     bar/notch; keep in-flow content inside the safe area. Fixed elements
-     (study bar, toasts) are viewport-positioned and handle their own insets. */
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
 /* Reusable component classes. Living in the `components` layer means plain

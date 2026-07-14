@@ -2,6 +2,7 @@ import { A, useParams } from "@solidjs/router";
 import { createMemo, createSignal, For, onSettled, refresh, Show } from "solid-js";
 import { type Grade, Rating, State } from "ts-fsrs";
 
+import Body from "../components/Body";
 import { Markdown } from "../components/Markdown";
 import { deckStateCounts, studyQueue } from "../db/cards";
 import { getDb } from "../db/client";
@@ -92,88 +93,89 @@ export default function StudyPage() {
   });
 
   return (
-    <div class="space-y-6">
-      <div class="flex items-center justify-between text-sm text-stone-500">
+    <Body class="grid h-dvh min-h-0 grid-rows-[auto_1fr_auto]">
+      <header class="flex items-center justify-between px-4 text-sm text-stone-500">
         <A href={`/decks/${deckId()}`} class="hover:text-teal-600">
           ← {deck()?.name ?? "Deck"}
         </A>
         <span>
           {reviewedCount()} reviewed · {Math.max(queue().length - index(), 0)} left
         </span>
-      </div>
+      </header>
 
-      <SegmentBar
-        label="Deck"
-        segments={BAR_STATES.map((state) => ({
-          count: stateCounts()[state],
-          label: STATE_LABELS[state],
-          data: { "data-state": state },
-        }))}
-      />
-      <SegmentBar
-        label="Session"
-        segments={GRADES.map((grade) => ({
-          count: gradeCounts()[grade],
-          label: GRADE_LABELS[grade].toLowerCase(),
-          data: { "data-grade": grade },
-        }))}
-      />
+      <main class="min-h-0 overflow-y-scroll">
+        <article>
+          <SegmentBar
+            label="Deck"
+            segments={BAR_STATES.map((state) => ({
+              count: stateCounts()[state],
+              label: STATE_LABELS[state],
+              data: { "data-state": state },
+            }))}
+          />
+          <SegmentBar
+            label="Session"
+            segments={GRADES.map((grade) => ({
+              count: gradeCounts()[grade],
+              label: GRADE_LABELS[grade].toLowerCase(),
+              data: { "data-grade": grade },
+            }))}
+          />
+        </article>
 
-      {/* `keyed` works around a solid-js 2.0.0-beta.17 bug: rating the last card
+        {/* `keyed` works around a solid-js 2.0.0-beta.17 bug: rating the last card
           puts refresh(stateCounts) in the same flush as current() turning
           undefined, and the suspended re-run reads the non-keyed narrowed
           accessor after the condition flipped — "Stale read from <Show>".
           Canary test: src/solid-stale-show.test.tsx (drop `keyed` when it fails). */}
-      <Show
-        keyed
-        when={current()}
-        fallback={<DoneScreen reviewedCount={reviewedCount()} onCheckForMore={checkForMore} />}
-      >
-        {(item) => (
-          <>
-            <div class="card mb-28 space-y-4 p-6">
+        <Show
+          keyed
+          when={current()}
+          fallback={<DoneScreen reviewedCount={reviewedCount()} onCheckForMore={checkForMore} />}
+        >
+          {(item) => (
+            <section class="card mt-6 mb-28 space-y-4 p-6">
               <Markdown source={item.direction === "reverse" ? item.back : item.front} />
               <Show when={revealed()}>
                 <hr class="border-stone-200 dark:border-stone-800" />
                 <Markdown source={item.direction === "reverse" ? item.front : item.back} />
               </Show>
-            </div>
+            </section>
+          )}
+        </Show>
+      </main>
 
-            <div class="absolute inset-x-0 bottom-0 border-t border-stone-200 bg-stone-100/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
-              <div class="mx-auto max-w-3xl pt-3 pr-[max(1rem,env(safe-area-inset-right))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]">
-                <Show
-                  when={revealed()}
-                  fallback={
-                    <button class="btn-primary w-full py-4" onClick={() => setRevealed(true)}>
-                      Show answer <span class="opacity-60">(space)</span>
-                    </button>
-                  }
-                >
-                  <div class="grid grid-cols-4 gap-2">
-                    <For each={GRADES}>
-                      {(grade, gradeIndex) => (
-                        <button
-                          class="grade-btn"
-                          data-grade={grade}
-                          disabled={busy()}
-                          onClick={() => rate(grade)}
-                        >
-                          <span class="block">
-                            {GRADE_LABELS[grade]}{" "}
-                            <span class="opacity-60">({gradeIndex() + 1})</span>
-                          </span>
-                          <span class="block text-xs opacity-75">{intervals()?.[grade]}</span>
-                        </button>
-                      )}
-                    </For>
-                  </div>
-                </Show>
-              </div>
+      <Show keyed when={current()}>
+        <footer class="border-t border-stone-200 bg-stone-100/95 p-4 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
+          <Show
+            when={revealed()}
+            fallback={
+              <button class="btn-primary w-full py-4" onClick={() => setRevealed(true)}>
+                Show answer <span class="opacity-60">(space)</span>
+              </button>
+            }
+          >
+            <div class="grid grid-cols-4 gap-2">
+              <For each={GRADES}>
+                {(grade, gradeIndex) => (
+                  <button
+                    class="grade-btn"
+                    data-grade={grade}
+                    disabled={busy()}
+                    onClick={() => rate(grade)}
+                  >
+                    <span class="block">
+                      {GRADE_LABELS[grade]} <span class="opacity-60">({gradeIndex() + 1})</span>
+                    </span>
+                    <span class="block text-xs opacity-75">{intervals()?.[grade]}</span>
+                  </button>
+                )}
+              </For>
             </div>
-          </>
-        )}
+          </Show>
+        </footer>
       </Show>
-    </div>
+    </Body>
   );
 }
 
