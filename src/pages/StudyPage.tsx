@@ -103,7 +103,7 @@ export default function StudyPage() {
         </span>
       </header>
 
-      <main class="min-h-0 overflow-y-scroll">
+      <main class="min-h-0 overflow-y-scroll px-4">
         <article>
           <SegmentBar
             label="Deck"
@@ -146,7 +146,7 @@ export default function StudyPage() {
       </main>
 
       <Show keyed when={current()}>
-        <footer class="border-t border-stone-200 bg-stone-100/95 p-4 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
+        <footer class="border-t border-stone-200 bg-stone-100/95 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
           <Show
             when={revealed()}
             fallback={

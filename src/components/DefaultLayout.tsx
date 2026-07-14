@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { Errored, Loading, Match, type ParentProps, Switch } from "solid-js";
+import { createSignal, Errored, Loading, Match, type ParentProps, Switch } from "solid-js";
 
 import { Toast } from "../components/Toast";
 import {
@@ -44,13 +44,25 @@ function ErrorScreen(props: { error: () => unknown; reset: () => void }) {
 }
 
 function ServiceWorkerToast() {
+  const [label, setLabel] = createSignal("Reload");
   return (
     <Switch>
       <Match when={updateReady()}>
         <Toast id="update-toast">
           <p class="text-sm">A new version of Flashcut is available.</p>
-          <button class="btn-primary" onClick={() => void applyUpdate()}>
-            Reload
+          <button
+            class="btn-primary"
+            onClick={() => {
+              setLabel("Updating...");
+
+              try {
+                applyUpdate();
+              } finally {
+                setLabel("Try again");
+              }
+            }}
+          >
+            {label()}
           </button>
           <button
             class="btn-ghost"
