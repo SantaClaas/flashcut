@@ -65,26 +65,24 @@ export default function DeckListPage() {
         <ul class="space-y-3">
           <For each={decks()}>
             {(deck) => (
-              <li class="card flex items-center justify-between gap-4">
-                <div class="min-w-0">
-                  <A href={`/decks/${deck.id}`} class="font-semibold hover:text-teal-600">
-                    {deck.name}
-                  </A>
-                  <p class="mt-1 text-xs text-stone-500">
-                    {deck.totalCount} cards
-                    <Show when={deck.dueCount > 0}>
-                      <span class="ml-2 font-medium text-teal-600 dark:text-teal-400">
-                        {deck.dueCount} due
-                      </span>
-                    </Show>
-                    <Show when={deck.newCount > 0}>
-                      <span class="ml-2 font-medium text-sky-600 dark:text-sky-400">
-                        {deck.newCount} new
-                      </span>
-                    </Show>
-                  </p>
-                </div>
-                <div class="flex shrink-0 items-center gap-1">
+              <li class="card">
+                <A href={`/decks/${deck.id}`} class="font-semibold hover:text-teal-600">
+                  {deck.name}
+                </A>
+                <p class="mt-1 text-xs text-stone-500">
+                  {deck.totalCount} cards
+                  <Show when={deck.dueCount > 0}>
+                    <span class="ml-2 font-medium text-teal-600 dark:text-teal-400">
+                      {deck.dueCount} due
+                    </span>
+                  </Show>
+                  <Show when={deck.newCount > 0}>
+                    <span class="ml-2 font-medium text-sky-600 dark:text-sky-400">
+                      {deck.newCount} new
+                    </span>
+                  </Show>
+                </p>
+                <div class="mt-4 flex shrink-0 items-center justify-end gap-1">
                   <A href={`/decks/${deck.id}/study`} class="btn-primary">
                     Study
                   </A>
